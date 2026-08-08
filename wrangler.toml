@@ -7,7 +7,7 @@ pages_build_output_dir = "."
 [[d1_databases]]
 binding = "DB"
 database_name = "toy"
-database_id = "BU-YERGA-D1-ID"
+database_id = "152aee60-3aae-49c4-a3a9-7d3ad9ecea22"
 
 # Maxfiy qiymatlar bu faylda EMAS. Ular alohida beriladi:
 #   wrangler pages secret put ADMIN_KEY   → admin panel paroli
