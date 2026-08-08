@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mehmonlar javoblari — admin</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#062A2B">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23062A2B'/%3E%3Cg fill='none' stroke='%23C9A24B' stroke-width='2.4'%3E%3Crect x='17' y='17' width='30' height='30'/%3E%3Cpath d='M32 12 52 32 32 52 12 32Z'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/admin.css">
+</head>
+<body>
+
+<!-- ═══════ KIRISH ═══════ -->
+<div class="gate" id="gate">
+  <form class="gate__box" id="gateForm">
+    <div class="gate__mark" aria-hidden="true">S<i>◆</i>D</div>
+    <h1>Mehmonlar javoblari</h1>
+    <p class="gate__sub">Boshqaruv paneli</p>
+    <label for="pw" class="sr-only">Parol</label>
+    <input type="password" id="pw" placeholder="Parol" autocomplete="current-password" required>
+    <button type="submit" class="btn btn--gold" id="gateBtn">Kirish</button>
+    <p class="gate__err" id="gateErr" role="alert" hidden></p>
+  </form>
+</div>
+
+<!-- ═══════ PANEL ═══════ -->
+<div class="app" id="app" hidden>
+
+  <header class="top">
+    <div>
+      <h1>Mehmonlar javoblari</h1>
+      <p>Sohibjon &amp; Dilnozaxon · 17.08.2026</p>
+    </div>
+    <div class="top__acts">
+      <button class="btn btn--line" id="refreshBtn" type="button">Yangilash</button>
+      <button class="btn btn--line" id="exportBtn" type="button">Excel'ga yuklash</button>
+      <button class="btn btn--line" id="logoutBtn" type="button">Chiqish</button>
+    </div>
+  </header>
+
+  <main class="body">
+
+    <div class="banner" id="banner" hidden></div>
+
+    <section class="stats" aria-label="Umumiy raqamlar">
+      <div class="stat stat--a"><em>Jami javob berdi</em><strong id="sTotal">0</strong><i id="sTotalSub">—</i></div>
+      <div class="stat stat--b"><em>Kelaman dedi</em><strong id="sYes">0</strong><i id="sYesSub">—</i></div>
+      <div class="stat stat--c"><em>Kelmayman dedi</em><strong id="sNo">0</strong><i id="sNoSub">—</i></div>
+      <div class="stat stat--d"><em>Oxirgi javob</em><strong id="sLast" class="stat--sm">—</strong><i id="sLastSub">—</i></div>
+    </section>
+
+    <section class="split">
+      <div class="panel">
+        <h2>Javoblar oqimi <span>oxirgi 10 kun</span></h2>
+        <div class="bars" id="bars"></div>
+      </div>
+      <div class="panel">
+        <h2>Taqsimot</h2>
+        <div class="donut">
+          <div class="ring" id="ring"><b id="ringPct">0%</b></div>
+          <div class="keys">
+            <div><u style="background:#3B8F62"></u>Kelaman · <b id="kYes">0</b></div>
+            <div><u style="background:#B4675B"></u>Kelmayman · <b id="kNo">0</b></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tools">
+      <input type="search" id="search" placeholder="Ism yoki telefon bo'yicha qidirish…" aria-label="Qidirish">
+      <div class="pills" role="group" aria-label="Filtr">
+        <button class="pill is-on" data-f="all" type="button">Hammasi</button>
+        <button class="pill" data-f="yes" type="button">Kelaman</button>
+        <button class="pill" data-f="no" type="button">Kelmayman</button>
+      </div>
+    </section>
+
+    <div class="tablewrap">
+      <table id="table">
+        <thead>
+          <tr>
+            <th class="sortable" data-k="name">Mehmon</th>
+            <th class="sortable" data-k="answer">Javob</th>
+            <th>Telefon</th>
+            <th class="sortable is-sorted" data-k="at">Vaqt</th>
+            <th aria-label="Amallar"></th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <p class="empty" id="empty" hidden>Hozircha javob yo'q.</p>
+    </div>
+
+    <p class="tfoot"><span id="count">0 ta yozuv</span><span>Ustun nomiga bosib saralang</span></p>
+  </main>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="assets/config.js"></script>
+<script src="assets/admin.js"></script>
+</body>
+</html>
