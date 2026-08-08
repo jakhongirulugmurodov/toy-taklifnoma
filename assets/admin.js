@@ -242,6 +242,10 @@
       tr.innerHTML =
         '<td><div class="who"><span class="av' + (yes ? '' : ' av--no') + '">' + esc(initials(r.name)) + '</span>' + esc(r.name || '—') + '</div></td>' +
         '<td><span class="bdg ' + (yes ? 'bdg--y">Kelaman' : 'bdg--n">Kela olmaydi') + '</span></td>' +
+        '<td>' + (r.wish
+          ? '<span class="wish" title="' + esc(r.wish) + '">' + esc(r.wish) + '</span>' +
+            '<button class="wishclear" type="button" data-wid="' + esc(r.id) + '" title="Tilakni o\'chirish">×</button>'
+          : '<span class="muted">—</span>') + '</td>' +
         '<td class="muted">' + esc(fmtDate(r.at)) + '</td>' +
         '<td style="text-align:right">' +
           (r.id ? '<button class="del" type="button" data-id="' + esc(r.id) + '" aria-label="O\'chirish" title="O\'chirish">✕</button>' : '') +
@@ -301,12 +305,31 @@
     }).catch(function () { toast('O\'chirib bo\'lmadi'); });
   });
 
+  /* ══════════ TILAKNI TOZALASH ══════════ */
+  $('tbody').addEventListener('click', function (e) {
+    var btn = e.target.closest('.wishclear');
+    if (!btn) return;
+    if (!confirm('Tilak o\'chirilsinmi? (Javob saqlanib qoladi)')) return;
+    var pw;
+    try { pw = sessionStorage.getItem(PW_KEY) || ''; } catch (er) { pw = ''; }
+    fetch(api('wish'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Admin-Key': pw },
+      body: JSON.stringify({ id: btn.dataset.wid })
+    }).then(function (r) {
+      if (!r.ok) throw new Error('net');
+      rows.forEach(function (x) { if (String(x.id) === String(btn.dataset.wid)) x.wish = null; });
+      drawTable();
+      toast('Tilak o\'chirildi');
+    }).catch(function () { toast('O\'chirib bo\'lmadi'); });
+  });
+
   /* ══════════ EKSPORT ══════════ */
   $('exportBtn').addEventListener('click', function () {
     var list = visible();
     if (!list.length) { toast('Eksport uchun yozuv yo\'q'); return; }
 
-    var head = ['Ism', 'Javob', 'Vaqt'];
+    var head = ['Ism', 'Javob', 'Tilak', 'Vaqt'];
     var cell = function (v) { return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; };
 
     var lines = [head.map(cell).join(';')];
@@ -314,6 +337,7 @@
       lines.push([
         r.name || '',
         r.answer === 'yes' ? 'Kelaman' : 'Kela olmaydi',
+        r.wish || '',
         fmtDate(r.at)
       ].map(cell).join(';'));
     });

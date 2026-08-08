@@ -24,14 +24,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa&family=Marcellus&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/style.css?v=3">
 <script>document.documentElement.classList.remove('no-js');</script>
 </head>
 <body>
 
 <!-- ═══════════ MUHR — kirish ekrani ═══════════ -->
 <div class="seal" id="seal" role="dialog" aria-modal="true" aria-labelledby="sealTitle">
-  <div class="girih girih--dark" aria-hidden="true"></div>
+  <div class="seal__half seal__half--l" aria-hidden="true"><div class="girih girih--dark"></div></div>
+  <div class="seal__half seal__half--r" aria-hidden="true"><div class="girih girih--dark"></div></div>
   <div class="seal__frame" aria-hidden="true"></div>
   <div class="seal__inner">
     <p class="eyebrow eyebrow--light">Nikoh to'yiga taklifnoma</p>
@@ -196,7 +197,7 @@
 </section>
 
 <!-- ═══════════ RASM LENTASI ═══════════ -->
-<section class="band" id="band" hidden>
+<section class="band reveal" id="band" hidden>
   <img id="bandPhoto" src="assets/couple-2.jpg" alt="Sohibjon va Dilnozaxon">
   <div class="band__veil" aria-hidden="true"></div>
   <p class="band__line">Ikki qalb — bir taqdir<span>17 · 08 · 2026</span></p>
@@ -245,8 +246,32 @@
         <div><dt>To'y sanasi</dt><dd>17.08.2026 · 19:00</dd></div>
       </dl>
 
+      <div class="wishbox" id="wishBox" hidden>
+        <label for="wishText">Yosh juftlikka tilak qoldiring <span>ixtiyoriy</span></label>
+        <textarea id="wishText" maxlength="200" rows="3"
+                  placeholder="Baxtli bo'linglar…"></textarea>
+        <div class="wishbox__row">
+          <span class="wishbox__count" id="wishCount">0 / 200</span>
+          <button class="btn btn--outline" id="wishSend" type="button">Tilakni yuborish</button>
+        </div>
+      </div>
+      <p class="wishbox__done" id="wishDone" hidden>Iliq tilagingiz uchun rahmat <span aria-hidden="true">❤</span></p>
+
       <button class="link" id="rsvpEdit" type="button">Javobni o'zgartirish</button>
     </div>
+  </div>
+</section>
+
+<!-- ═══════════ TILAKLAR LENTASI ═══════════ -->
+<section class="wishes" id="wishes" hidden>
+  <div class="wrap">
+    <header class="head reveal">
+      <p class="eyebrow">Mehmonlarimizdan</p>
+      <h2>Iliq tilaklar</h2>
+    </header>
+  </div>
+  <div class="ribbon" id="ribbon" aria-label="Mehmonlar tilaklari">
+    <div class="ribbon__track" id="ribbonTrack"></div>
   </div>
 </section>
 
@@ -263,6 +288,6 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="assets/config.js"></script>
-<script src="assets/app.js"></script>
+<script src="assets/app.js?v=3"></script>
 </body>
 </html>

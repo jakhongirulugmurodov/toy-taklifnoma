@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS rsvp (
   vid         TEXT    NOT NULL UNIQUE,          -- mehmon brauzerining doimiy belgisi
   name        TEXT    NOT NULL,
   answer      TEXT    NOT NULL CHECK (answer IN ('yes','no')),
+  wish        TEXT,                             -- mehmonning ixtiyoriy tilagi
   at          TEXT    NOT NULL,                 -- javob berilgan payt (ISO)
   ip          TEXT,
   ua          TEXT,

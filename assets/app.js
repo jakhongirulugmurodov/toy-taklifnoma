@@ -31,17 +31,39 @@
 
   document.body.classList.add('is-locked');
 
+  function buzz(pattern) {
+    try { if (navigator.vibrate) navigator.vibrate(pattern); } catch (e) {}
+  }
+
+  /* Xoreografiya: muhr sinadi → oltin chang → parda ikkiga ochiladi → ismlar chiqadi */
   function openInvite() {
     if (opened) return;
     opened = true;
-    sealBtn.classList.add('is-broken');
-    setTimeout(function () {
-      seal.classList.add('is-open');
+    buzz(14);
+    askGyro();                       // iOS ruxsati faqat teginish ichida so'raladi
+
+    if (reduced) {
+      seal.classList.add('is-cracking', 'is-open', 'is-gone');
       document.body.classList.remove('is-locked');
+      document.body.classList.add('opened');
       seal.setAttribute('aria-hidden', 'true');
-      // Mehmon ilgari musiqani o'chirgan bo'lsa — hurmat qilamiz
       if (pref() !== 'off') musicOn(false);
-    }, reduced ? 0 : 420);
+      return;
+    }
+
+    seal.classList.add('is-cracking');
+    var r = sealBtn.getBoundingClientRect();
+    dust(r.left + r.width / 2, r.top + r.height / 2, 30, 60, 40);
+
+    setTimeout(function () {
+      seal.classList.add('is-open');            // parda surila boshlaydi
+      document.body.classList.remove('is-locked');
+      document.body.classList.add('opened');    // hero xoreografiyasi start oladi
+      seal.setAttribute('aria-hidden', 'true');
+      if (pref() !== 'off') musicOn(false);
+    }, 430);
+
+    setTimeout(function () { seal.classList.add('is-gone'); }, 1700);
   }
   sealBtn.addEventListener('click', openInvite);
 
@@ -116,24 +138,47 @@
     else { music.play().catch(function () {}); }
   });
 
-  /* ══════════ 3. REVEAL ══════════ */
-  var revealEls = document.querySelectorAll('.reveal');
+  /* ══════════ 3. REVEAL (navbat bilan) ══════════ */
+  var io = null;
   if ('IntersectionObserver' in window) {
-    var io = new IntersectionObserver(function (entries) {
+    io = new IntersectionObserver(function (entries) {
+      var order = 0;
       entries.forEach(function (e) {
-        if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+        if (!e.isIntersecting) return;
+        var el = e.target;
+        // Bir partiyada kelganlar navbat bilan ochiladi
+        if (!reduced) {
+          el.style.transitionDelay = (order * 110) + 'ms';
+          order++;
+          el.addEventListener('transitionend', function te() {
+            el.style.transitionDelay = '';
+            el.removeEventListener('transitionend', te);
+          });
+        }
+        el.classList.add('is-in');
+        io.unobserve(el);
       });
     }, { threshold: 0.12, rootMargin: '0px 0px -40px' });
-    revealEls.forEach(function (el) { io.observe(el); });
+    document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
   } else {
-    revealEls.forEach(function (el) { el.classList.add('is-in'); });
+    document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('is-in'); });
   }
 
-  /* ══════════ 4. SANOQ ══════════ */
+  /* ══════════ 4. SANOQ (raqamlar pastdan aylanib chiqadi) ══════════ */
   var target = new Date(CFG.date || '2026-08-17T19:00:00+05:00').getTime();
   var cdD = $('cdD'), cdH = $('cdH'), cdM = $('cdM'), cdS = $('cdS'), cdNote = $('cdNote');
   var pad = function (n) { return String(n).padStart(2, '0'); };
   var cdTimer;
+
+  function setNum(el, val) {
+    if (el.textContent === val) return;
+    el.textContent = val;
+    if (reduced || !el.animate) return;
+    el.animate(
+      [{ transform: 'translateY(.42em)', opacity: 0 }, { transform: 'translateY(0)', opacity: 1 }],
+      { duration: 480, easing: 'cubic-bezier(.22,1,.36,1)' }
+    );
+  }
 
   function tick() {
     var diff = target - Date.now();
@@ -143,10 +188,10 @@
       clearInterval(cdTimer);
       return;
     }
-    cdD.textContent = pad(Math.floor(diff / 86400000));
-    cdH.textContent = pad(Math.floor(diff / 3600000) % 24);
-    cdM.textContent = pad(Math.floor(diff / 60000) % 60);
-    cdS.textContent = pad(Math.floor(diff / 1000) % 60);
+    setNum(cdD, pad(Math.floor(diff / 86400000)));
+    setNum(cdH, pad(Math.floor(diff / 3600000) % 24));
+    setNum(cdM, pad(Math.floor(diff / 60000) % 60));
+    setNum(cdS, pad(Math.floor(diff / 1000) % 60));
   }
   tick();
   cdTimer = setInterval(tick, 1000);
@@ -268,7 +313,10 @@
     // Keng lenta — rasm bo'lmasa butun bo'lim ko'rinmaydi
     var band = $('bandPhoto');
     whenReady(band,
-      function () { $('band').hidden = false; },
+      function () {
+        $('band').hidden = false;
+        if (!reduced) buildThread();
+      },
       function () { $('band').remove(); });
   })();
 
@@ -312,6 +360,8 @@
       : 'Duolaringiz biz uchun yetarli.<br>Rahmat sizga ❤';
     $('rcAnswer').textContent = yes ? 'Kelamiz' : 'Kela olmaymiz';
     $('rcName').textContent = rec.name || '—';
+    syncWishUI(rec);
+    if (celebrate) buzz(yes ? [12, 50, 16] : 10);
     if (yes && celebrate) goldDust();
   }
 
@@ -411,12 +461,9 @@
   }
 
   /* ══════════ 10. OLTIN CHANG ══════════ */
-  function goldDust() {
+  function dust(cx, cy, n, spread, fall) {
     if (reduced || !document.body.animate) return;
-    var rect = done.getBoundingClientRect();
-    var cx = rect.left + rect.width / 2, cy = rect.top + 60;
-
-    for (var i = 0; i < 26; i++) {
+    for (var i = 0; i < n; i++) {
       var p = document.createElement('i');
       p.className = 'dust';
       var size = 3 + Math.random() * 5;
@@ -425,15 +472,253 @@
       document.body.appendChild(p);
 
       var ang = Math.random() * Math.PI * 2;
-      var dist = 70 + Math.random() * 190;
+      var dist = spread + Math.random() * spread * 2.6;
       p.animate([
         { transform: 'translate(' + cx + 'px,' + cy + 'px) scale(.4)', opacity: 1 },
         {
           transform: 'translate(' + (cx + Math.cos(ang) * dist) + 'px,' +
-            (cy + Math.sin(ang) * dist + 130) + 'px) scale(1)', opacity: 0
+            (cy + Math.sin(ang) * dist + fall) + 'px) scale(1)', opacity: 0
         }
       ], { duration: 1400 + Math.random() * 900, easing: 'cubic-bezier(.2,.7,.4,1)' })
         .onfinish = (function (node) { return function () { node.remove(); }; })(p);
     }
   }
+  function goldDust() {
+    var rect = done.getBoundingClientRect();
+    dust(rect.left + rect.width / 2, rect.top + 60, 26, 70, 130);
+  }
+
+  /* ══════════ 11. GIRIH PARALLAKSI + OLTIN IP ══════════ */
+  var threadPath = null, threadRect = null, threadLen = 0;
+
+  function buildThread() {
+    var main = $('main');
+    var old = main.querySelector('.thread');
+    if (old) old.remove();
+
+    var W = main.clientWidth, H = main.scrollHeight;
+    var hero = $('hero');
+    var startY = hero.offsetTop + hero.offsetHeight - 30;
+    var secs = ['taklif', 'sanoq', 'kalendar', 'manzil', 'dastur', 'band', 'wishes', 'rsvp']
+      .map(function (id) { return $(id); })
+      .filter(function (el) { return el && !el.hidden; });
+
+    var pts = [[W / 2, startY]];
+    var amp = Math.min(96, W * 0.2);
+    secs.forEach(function (sec, i) {
+      var y = sec.offsetTop + Math.min(120, sec.offsetHeight * 0.25);
+      if (y > startY + 60) pts.push([W / 2 + (i % 2 ? -amp : amp), y]);
+    });
+    pts.push([W / 2, H - 40]);
+    if (pts.length < 3) return;
+
+    var d = 'M' + pts[0][0] + ' ' + pts[0][1];
+    for (var i = 1; i < pts.length; i++) {
+      var midY = (pts[i - 1][1] + pts[i][1]) / 2;
+      d += ' C ' + pts[i - 1][0] + ' ' + midY + ', ' + pts[i][0] + ' ' + midY +
+           ', ' + pts[i][0] + ' ' + pts[i][1];
+    }
+
+    var NS = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('class', 'thread');
+    svg.setAttribute('width', W);
+    svg.setAttribute('height', H);
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+    svg.setAttribute('aria-hidden', 'true');
+    svg.style.height = H + 'px';
+
+    var clip = document.createElementNS(NS, 'clipPath');
+    clip.setAttribute('id', 'threadClip');
+    threadRect = document.createElementNS(NS, 'rect');
+    threadRect.setAttribute('x', 0);
+    threadRect.setAttribute('y', 0);
+    threadRect.setAttribute('width', W);
+    threadRect.setAttribute('height', 0);
+    clip.appendChild(threadRect);
+
+    threadPath = document.createElementNS(NS, 'path');
+    threadPath.setAttribute('d', d);
+    threadPath.setAttribute('clip-path', 'url(#threadClip)');
+
+    svg.appendChild(clip);
+    svg.appendChild(threadPath);
+    main.insertBefore(svg, main.firstChild);
+    threadLen = H;
+  }
+
+  /* Silliqlik CSS transition zimmasida — rAF siklga bog'liq emas,
+     quvvat-tejash rejimida ham sinmaydi */
+  var rafOn = false;
+  function rafLoop() {
+    rafOn = false;
+    var sc = window.scrollY || 0;
+
+    // Girih naqshi sahifadan sekinroq suriladi — chuqurlik hissi
+    document.documentElement.style.setProperty('--gy', (sc * 0.09).toFixed(1) + 'px');
+
+    // Ip qaralayotgan joygacha "tikiladi"
+    if (threadRect && threadLen) {
+      var goal = Math.max(0, Math.min(threadLen, sc + window.innerHeight * 0.78));
+      threadRect.setAttribute('height', goal.toFixed(0));
+    }
+  }
+  function queueRaf() {
+    if (!rafOn) { rafOn = true; requestAnimationFrame(rafLoop); }
+  }
+  if (!reduced) {
+    window.addEventListener('scroll', queueRaf, { passive: true });
+    window.addEventListener('load', function () { buildThread(); rafLoop(); });
+    var rsz;
+    window.addEventListener('resize', function () {
+      clearTimeout(rsz);
+      rsz = setTimeout(function () { buildThread(); rafLoop(); }, 250);
+    });
+  }
+
+  /* ══════════ 12. HERO ZARRALARI ══════════ */
+  (function () {
+    if (reduced) return;
+    var hero = $('hero');
+    for (var i = 0; i < 12; i++) {
+      var s = document.createElement('i');
+      s.className = 'spark';
+      var size = (1.6 + Math.random() * 2.6).toFixed(1);
+      s.style.width = s.style.height = size + 'px';
+      s.style.left = (4 + Math.random() * 92).toFixed(1) + '%';
+      s.style.setProperty('--sd', (9 + Math.random() * 9).toFixed(1) + 's');
+      s.style.setProperty('--sdel', (-Math.random() * 14).toFixed(1) + 's');
+      s.style.setProperty('--sx', ((Math.random() - 0.5) * 70).toFixed(0) + 'px');
+      hero.appendChild(s);
+    }
+  })();
+
+  /* ══════════ 13. GIROSKOP — mehrob rasmi yengil suriladi ══════════ */
+  var gyroBase = null;
+  function onTilt(ev) {
+    if (ev.beta == null || ev.gamma == null) return;
+    if (gyroBase === null) gyroBase = { b: ev.beta, g: ev.gamma };
+    var dx = Math.max(-9, Math.min(9, (ev.gamma - gyroBase.g) * 0.45));
+    var dy = Math.max(-9, Math.min(9, (ev.beta - gyroBase.b) * 0.45));
+    var img = $('couplePhoto');
+    if (!img) return;
+    img.style.setProperty('--px', dx.toFixed(1) + 'px');
+    img.style.setProperty('--py', dy.toFixed(1) + 'px');
+  }
+  function askGyro() {
+    if (reduced) return;
+    try {
+      if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission().then(function (st) {
+          if (st === 'granted') window.addEventListener('deviceorientation', onTilt);
+        }).catch(function () {});
+      } else if (window.DeviceOrientationEvent) {
+        window.addEventListener('deviceorientation', onTilt);
+      }
+    } catch (e) {}
+  }
+  // Kompyuterda — sichqoncha bilan xuddi shu effekt
+  if (!reduced && window.matchMedia('(hover:hover)').matches) {
+    document.addEventListener('mousemove', function (ev) {
+      var img = $('couplePhoto');
+      if (!img || img.hidden) return;
+      var dx = ((ev.clientX / window.innerWidth) - 0.5) * 14;
+      var dy = ((ev.clientY / window.innerHeight) - 0.5) * 14;
+      img.style.setProperty('--px', dx.toFixed(1) + 'px');
+      img.style.setProperty('--py', dy.toFixed(1) + 'px');
+    }, { passive: true });
+  }
+
+  /* ══════════ 14. TILAKLAR ══════════ */
+  var wishBox = $('wishBox'), wishText = $('wishText'), wishSend = $('wishSend');
+  var wishDone = $('wishDone'), wishCount = $('wishCount');
+
+  function wishUrl(path) {
+    var base = CFG.api;
+    if (!base) return null;
+    if (base === '/') return '/api/' + path;
+    return base.replace(/\/+$/, '') + '/api/' + path;
+  }
+
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function syncWishUI(rec) {
+    if (!wishBox || !wishUrl('wish')) return;
+    if (rec && rec.wish) {
+      wishBox.hidden = true;
+      wishDone.hidden = false;
+    } else {
+      wishBox.hidden = false;
+      wishDone.hidden = true;
+    }
+  }
+
+  if (wishText) {
+    wishText.addEventListener('input', function () {
+      wishCount.textContent = wishText.value.length + ' / 200';
+    });
+  }
+
+  if (wishSend) {
+    wishSend.addEventListener('click', function () {
+      var w = wishText.value.trim().replace(/[ \t]+/g, ' ');
+      if (w.length < 3) { wishText.focus(); return; }
+      wishSend.disabled = true;
+
+      fetch(wishUrl('wish'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ vid: visitorId(), wish: w.slice(0, 200) })
+      }).then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        var rec = readLocal() || {};
+        rec.wish = w;
+        saveLocal(rec);
+        syncWishUI(rec);
+        buzz([10, 40, 12]);
+        addWishCard({ name: rec.name || '', wish: w }, true);
+      }).catch(function () {
+        toast("Tilak yuborilmadi — birozdan keyin urinib ko'ring");
+      }).then(function () { wishSend.disabled = false; });
+    });
+  }
+
+  /* ── Tilaklar lentasi ── */
+  var ribbonItems = [];
+  function addWishCard(item, prepend) {
+    if (prepend) ribbonItems.unshift(item); else ribbonItems.push(item);
+    renderRibbon();
+  }
+  function renderRibbon() {
+    var sec = $('wishes'), track = $('ribbonTrack');
+    if (!sec || !track || !ribbonItems.length) return;
+
+    var html = ribbonItems.map(function (w) {
+      return '<div class="wishcard"><b>' + esc(w.name) + '</b><p>' + esc(w.wish) + '</p></div>';
+    }).join('');
+    track.innerHTML = html + html;   // uzluksiz aylanish uchun ikki nusxa
+
+    var secs = Math.max(28, ribbonItems.length * 7);
+    track.style.setProperty('--rspeed', secs + 's');
+
+    if (sec.hidden) {
+      sec.hidden = false;
+      if (io) { sec.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); }); }
+      if (!reduced) buildThread();
+    }
+  }
+  // Qaytgan mehmon: tilak maydoni/rahmat holatini tiklaymiz
+  if (prev && prev.answer) syncWishUI(prev);
+
+  (function loadWishes() {
+    var url = wishUrl('wishes');
+    if (!url) return;
+    fetch(url).then(function (r) { return r.json(); }).then(function (d) {
+      var items = (d.items || []).filter(function (w) { return w && w.wish; });
+      if (items.length) { ribbonItems = items; renderRibbon(); }
+    }).catch(function () {});
+  })();
 })();
