@@ -138,6 +138,7 @@ input{font-family:inherit}
 .seal__role{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;color:var(--gold-lt)}
 .seal__hint{margin-top:26px;font-size:.66rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold-lt)}
 .seal__line{display:block;width:1px;height:28px;margin:10px auto 0;background:linear-gradient(var(--gold),transparent)}
+.seal__music{margin-top:16px;font-size:.72rem;letter-spacing:.04em;color:rgba(250,244,231,.72)}
 .seal__foot{position:absolute;bottom:30px;left:0;right:0;font-size:.64rem;letter-spacing:.2em;color:rgba(250,244,231,.72)}
 
 .wax{
@@ -172,8 +173,47 @@ input{font-family:inherit}
 .music__bars i:nth-child(1){height:8px;animation-delay:0s}
 .music__bars i:nth-child(2){height:16px;animation-delay:.15s}
 .music__bars i:nth-child(3){height:11px;animation-delay:.3s}
-.music[aria-pressed="false"] .music__bars i{animation-play-state:paused;height:5px}
+.music[aria-pressed="false"] .music__bars i{animation-play-state:paused;height:5px;opacity:.55}
+.music__off{
+  position:absolute;width:26px;height:1.5px;border-radius:2px;
+  background:var(--gold-lt);transform:rotate(-45deg);
+  opacity:0;transition:opacity .2s ease;
+}
+.music[aria-pressed="false"] .music__off{opacity:.95}
 @keyframes eq{0%,100%{height:5px}50%{height:16px}}
+
+/* ══════════ RASM LENTASI ══════════ */
+.band{
+  position:relative;overflow:hidden;
+  height:min(64vh,470px);
+  display:flex;align-items:flex-end;justify-content:center;
+  text-align:center;padding:0 26px 34px;
+  border-top:1px solid var(--line-lt);border-bottom:1px solid var(--line-lt);
+  background:var(--teal-900);
+}
+.band img{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:center 22%;
+}
+.band__veil{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,
+    rgba(6,42,43,.5) 0%,
+    rgba(6,42,43,.14) 34%,
+    rgba(6,42,43,.62) 74%,
+    rgba(6,42,43,.9) 100%);
+}
+.band__line{
+  position:relative;z-index:2;
+  font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;
+  font-size:clamp(1.3rem,5.5vw,2rem);line-height:1.4;
+  color:var(--cream);text-shadow:0 2px 24px rgba(0,0,0,.55);
+}
+.band__line span{
+  display:block;margin-top:12px;
+  font-family:'Jost',sans-serif;font-style:normal;
+  font-size:.66rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-lt);
+}
 
 /* ══════════ HERO ══════════ */
 .hero{

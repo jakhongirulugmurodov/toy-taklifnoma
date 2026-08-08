@@ -39,36 +39,81 @@
       seal.classList.add('is-open');
       document.body.classList.remove('is-locked');
       seal.setAttribute('aria-hidden', 'true');
-      $('main').focus && $('main').focus();
-      tryMusic();
+      // Mehmon ilgari musiqani o'chirgan bo'lsa — hurmat qilamiz
+      if (pref() !== 'off') musicOn(false);
     }, reduced ? 0 : 420);
   }
   sealBtn.addEventListener('click', openInvite);
 
   /* ══════════ 2. MUSIQA ══════════ */
-  var music = $('bgMusic'), musicBtn = $('musicBtn'), playing = false, hasAudio = false;
+  var music = $('bgMusic'), musicBtn = $('musicBtn');
+  var hasAudio = false, playing = false, fadeTimer = null, toldOnce = false;
+  var VOL = 0.4, PREF = 'toy-music';
 
-  // Fayl umuman yo'q bo'lsa tugmani ko'rsatmaymiz
-  music.addEventListener('canplay', function () {
+  function pref() { try { return localStorage.getItem(PREF); } catch (e) { return null; } }
+  function setPref(v) { try { localStorage.setItem(PREF, v); } catch (e) {} }
+
+  // Fayl bo'lmasa tugma ham, muhrdagi eslatma ham chiqmaydi
+  music.addEventListener('loadedmetadata', function () {
     hasAudio = true;
     musicBtn.hidden = false;
+    var hint = document.querySelector('.seal__music');
+    if (hint) hint.hidden = false;
   });
-  music.addEventListener('error', function () { musicBtn.hidden = true; });
-  music.load();
+  music.addEventListener('error', function () { hasAudio = false; musicBtn.hidden = true; });
 
-  function setMusic(on) {
+  function paint(on) {
     playing = on;
     musicBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
     musicBtn.setAttribute('aria-label', on ? "Musiqani o'chirish" : 'Musiqani yoqish');
   }
-  function tryMusic() {
-    if (!hasAudio) return;
-    music.volume = 0.45;
-    music.play().then(function () { setMusic(true); }).catch(function () { setMusic(false); });
+
+  /* Ovozni keskin emas, yumshoq ko'taradi/tushiradi */
+  function fade(to, after) {
+    clearInterval(fadeTimer);
+    if (reduced) { music.volume = to; if (after) after(); return; }
+    var step = (to - music.volume) / 14;
+    fadeTimer = setInterval(function () {
+      var v = music.volume + step;
+      if ((step > 0 && v >= to) || (step < 0 && v <= to) || !step) {
+        music.volume = Math.min(1, Math.max(0, to));
+        clearInterval(fadeTimer);
+        if (after) after();
+      } else {
+        music.volume = Math.min(1, Math.max(0, v));
+      }
+    }, 45);
   }
+
+  function musicOn(quiet) {
+    if (!hasAudio) return;
+    music.volume = 0;
+    music.play().then(function () {
+      paint(true);
+      setPref('on');
+      fade(VOL);
+      if (!quiet && !toldOnce) {
+        toldOnce = true;
+        toast("Musiqa yoqildi — o'chirish uchun yuqoridagi tugmani bosing");
+      }
+    }).catch(function () { paint(false); });
+  }
+
+  function musicOff() {
+    setPref('off');
+    paint(false);
+    fade(0, function () { music.pause(); });
+  }
+
   musicBtn.addEventListener('click', function () {
-    if (playing) { music.pause(); setMusic(false); }
-    else { tryMusic(); }
+    if (playing) { musicOff(); } else { musicOn(true); }
+  });
+
+  /* Mehmon boshqa ilovaga o'tsa — jim turadi, qaytganda davom etadi */
+  document.addEventListener('visibilitychange', function () {
+    if (!hasAudio || !playing) return;
+    if (document.hidden) { music.pause(); }
+    else { music.play().catch(function () {}); }
   });
 
   /* ══════════ 3. REVEAL ══════════ */
@@ -201,22 +246,50 @@
     } else { toast(text); }
   });
 
-  /* ══════════ 8. RASM (bo'lmasa monogramma) ══════════ */
+  /* ══════════ 8. RASMLAR (bo'lmasa jimgina yashiriladi) ══════════ */
   (function () {
-    var img = $('couplePhoto');
-    img.addEventListener('load', function () {
-      img.hidden = false;
-      $('archMono').hidden = true;
-    });
-    img.addEventListener('error', function () { img.remove(); });
+    /* Rasm keshdan darhol kelsa 'load' biz ulangunimizcha o'tib ketadi —
+       shuning uchun har doim avval .complete tekshiriladi */
+    function whenReady(img, ok, fail) {
+      if (img.complete) {
+        (img.naturalWidth > 0 ? ok : fail)();
+        return;
+      }
+      img.addEventListener('load', ok);
+      img.addEventListener('error', fail);
+    }
+
+    // Mehrob ramkasi — rasm bo'lmasa monogramma qoladi
+    var arch = $('couplePhoto');
+    whenReady(arch,
+      function () { arch.hidden = false; $('archMono').hidden = true; },
+      function () { arch.remove(); });
+
+    // Keng lenta — rasm bo'lmasa butun bo'lim ko'rinmaydi
+    var band = $('bandPhoto');
+    whenReady(band,
+      function () { $('band').hidden = false; },
+      function () { $('band').remove(); });
   })();
 
   /* ══════════ 9. RSVP ══════════ */
   var form = $('rsvpForm'), done = $('rsvpDone');
-  var nameEl = $('rsvpName'), phoneEl = $('rsvpPhone'), errEl = $('rsvpErr');
+  var nameEl = $('rsvpName'), errEl = $('rsvpErr');
   var btnYes = $('btnYes'), btnNo = $('btnNo');
   var STORE = 'toy-rsvp-v1';
   var chosen = 'yes';
+
+  /* Har brauzerga bitta doimiy belgi — javob qayta yuborilsa yangisi
+     qo'shilmay, eskisi yangilanadi (bir xil ismli ikki mehmon aralashmaydi) */
+  function visitorId() {
+    var k = 'toy-vid', v;
+    try { v = localStorage.getItem(k); } catch (e) {}
+    if (!v) {
+      v = 'v' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+      try { localStorage.setItem(k, v); } catch (e) {}
+    }
+    return v;
+  }
 
   btnYes.addEventListener('click', function () { chosen = 'yes'; });
   btnNo.addEventListener('click', function () { chosen = 'no'; });
@@ -265,8 +338,8 @@
     $('nameErr').hidden = true;
 
     var rec = {
+      vid: visitorId(),
       name: name,
-      phone: phoneEl.value.trim(),
       answer: chosen,
       at: new Date().toISOString(),
       website: $('hp').value            // asalarixona — bot to'ldirsa serverda tashlanadi
@@ -277,10 +350,16 @@
       saveLocal(rec);
       showDone(rec, true);
     }).catch(function () {
-      // Server javob bermasa ham mehmon uchun ish tugadi — javob keyin yuboriladi
-      saveLocal(rec);
-      queue(rec);
-      showDone(rec, true);
+      if (navigator.onLine === false) {
+        // Internet yo'q — javobni navbatga qo'yamiz, ulanganda o'zi yuboriladi
+        saveLocal(rec);
+        queue(rec);
+        showDone(rec, true);
+        return;
+      }
+      // Server javob bermadi. Mehmonga soxta "qabul qilindi" ko'rsatmaymiz.
+      errEl.textContent = "Javob yuborilmadi. Iltimos, birozdan keyin qayta urinib ko'ring.";
+      errEl.hidden = false;
     }).then(function () {
       btnYes.disabled = btnNo.disabled = false;
     });
@@ -328,7 +407,6 @@
   if (prev && prev.answer) {
     showDone(prev, false);
     nameEl.value = prev.name || '';
-    phoneEl.value = prev.phone || '';
     chosen = prev.answer;
   }
 

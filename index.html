@@ -44,6 +44,7 @@
     </button>
 
     <p class="seal__hint">Muhrni bosing<i class="seal__line" aria-hidden="true"></i></p>
+    <p class="seal__music" hidden>Musiqa bilan ochiladi — xohlasangiz o'chirasiz</p>
   </div>
   <p class="seal__foot">17.08.2026 &nbsp;·&nbsp; SAMARQAND</p>
 </div>
@@ -51,9 +52,10 @@
 <!-- ═══════════ Musiqa ═══════════ -->
 <button class="music" id="musicBtn" type="button" aria-label="Musiqani yoqish" aria-pressed="false" hidden>
   <span class="music__bars" aria-hidden="true"><i></i><i></i><i></i></span>
+  <span class="music__off" aria-hidden="true"></span>
 </button>
-<audio id="bgMusic" loop preload="none">
-  <source src="assets/music.mp3" type="audio/mpeg">
+<audio id="bgMusic" loop preload="metadata" playsinline>
+  <source src="assets/music.m4a" type="audio/mp4">
 </audio>
 
 <main id="main">
@@ -86,7 +88,7 @@
     <figure class="arch reveal">
       <div class="arch__inner">
         <div class="girih" aria-hidden="true"></div>
-        <img id="couplePhoto" src="assets/couple.jpg" alt="Sohibjon va Dilnozaxon" hidden>
+        <img id="couplePhoto" src="assets/couple-1.jpg" alt="Sohibjon va Dilnozaxon" hidden>
         <span class="arch__mono foil" id="archMono" aria-hidden="true">S<i>◆</i>D</span>
       </div>
     </figure>
@@ -193,6 +195,13 @@
   </div>
 </section>
 
+<!-- ═══════════ RASM LENTASI ═══════════ -->
+<section class="band" id="band" hidden>
+  <img id="bandPhoto" src="assets/couple-2.jpg" alt="Sohibjon va Dilnozaxon">
+  <div class="band__veil" aria-hidden="true"></div>
+  <p class="band__line">Ikki qalb — bir taqdir<span>17 · 08 · 2026</span></p>
+</section>
+
 <!-- ═══════════ RSVP ═══════════ -->
 <section class="pad dark" id="rsvp">
   <div class="girih girih--dark" aria-hidden="true"></div>
@@ -209,12 +218,6 @@
         <input type="text" id="rsvpName" name="name" autocomplete="name" required
                maxlength="60" placeholder="Aziz Karimov" aria-describedby="nameErr">
         <p class="field__err" id="nameErr" hidden>Iltimos, ismingizni yozing.</p>
-      </div>
-
-      <div class="field">
-        <label for="rsvpPhone">Telefon <span>ixtiyoriy</span></label>
-        <input type="tel" id="rsvpPhone" name="phone" autocomplete="tel"
-               maxlength="20" placeholder="+998 90 123 45 67" inputmode="tel">
       </div>
 
       <input type="text" name="website" id="hp" tabindex="-1" autocomplete="off" aria-hidden="true">

@@ -8,7 +8,7 @@ window.TOY = {
                                      faqat mehmonning brauzerida qoladi.
        '/'                         → sayt bilan bir xil domen (/api/rsvp)
        'https://xxx.workers.dev'   → alohida server                          */
-  api: '',
+  api: '/',
 
   /* To'y sanasi — ISO, O'zbekiston vaqti (+05:00) */
   date: '2026-08-17T19:00:00+05:00',

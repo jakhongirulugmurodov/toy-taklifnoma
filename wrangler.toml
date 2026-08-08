@@ -1,0 +1,15 @@
+name = "toy-taklifnoma"
+compatibility_date = "2026-08-01"
+pages_build_output_dir = "."
+
+# D1 bazasi. database_id ni "wrangler d1 create toy" buyrug'i beradi —
+# chiqqan qiymatni shu yerga ko'chiring.
+[[d1_databases]]
+binding = "DB"
+database_name = "toy"
+database_id = "BU-YERGA-D1-ID"
+
+# Maxfiy qiymatlar bu faylda EMAS. Ular alohida beriladi:
+#   wrangler pages secret put ADMIN_KEY   → admin panel paroli
+#   wrangler pages secret put TG_TOKEN    → Telegram bot tokeni
+#   wrangler pages secret put TG_CHAT     → xabar tushadigan chat ID

@@ -136,8 +136,7 @@
     return rows.filter(function (r) {
       if (filter !== 'all' && r.answer !== filter) return false;
       if (!q) return true;
-      return (r.name || '').toLowerCase().indexOf(q) > -1 ||
-             (r.phone || '').replace(/\s/g, '').indexOf(q.replace(/\s/g, '')) > -1;
+      return (r.name || '').toLowerCase().indexOf(q) > -1;
     }).sort(function (a, b) {
       var x = a[sortKey] || '', y = b[sortKey] || '';
       if (x === y) return 0;
@@ -243,9 +242,6 @@
       tr.innerHTML =
         '<td><div class="who"><span class="av' + (yes ? '' : ' av--no') + '">' + esc(initials(r.name)) + '</span>' + esc(r.name || '—') + '</div></td>' +
         '<td><span class="bdg ' + (yes ? 'bdg--y">Kelaman' : 'bdg--n">Kela olmaydi') + '</span></td>' +
-        '<td>' + (r.phone
-          ? '<a href="tel:' + esc(r.phone.replace(/\s/g, '')) + '">' + esc(r.phone) + '</a>'
-          : '<span class="muted">—</span>') + '</td>' +
         '<td class="muted">' + esc(fmtDate(r.at)) + '</td>' +
         '<td style="text-align:right">' +
           (r.id ? '<button class="del" type="button" data-id="' + esc(r.id) + '" aria-label="O\'chirish" title="O\'chirish">✕</button>' : '') +
@@ -310,7 +306,7 @@
     var list = visible();
     if (!list.length) { toast('Eksport uchun yozuv yo\'q'); return; }
 
-    var head = ['Ism', 'Javob', 'Telefon', 'Vaqt'];
+    var head = ['Ism', 'Javob', 'Vaqt'];
     var cell = function (v) { return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; };
 
     var lines = [head.map(cell).join(';')];
@@ -318,7 +314,6 @@
       lines.push([
         r.name || '',
         r.answer === 'yes' ? 'Kelaman' : 'Kela olmaydi',
-        r.phone || '',
         fmtDate(r.at)
       ].map(cell).join(';'));
     });
