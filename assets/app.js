@@ -699,24 +699,111 @@
     if (prepend) ribbonItems.unshift(item); else ribbonItems.push(item);
     renderRibbon();
   }
+  function card(w) {
+    return '<div class="wishcard"><b>' + esc(w.name) + '</b><p>' + esc(w.wish) + '</p></div>';
+  }
+
+  /* Qatorni to'ldiradi. Halqa aylanishi uchun kamida 2 nusxa,
+     va kontent ekrandan 2 barobar keng bo'lishi kerak. */
+  function fillRow(rowEl, trackEl, items) {
+    if (!items.length) { rowEl.hidden = true; return; }
+    rowEl.hidden = false;
+    var one = items.map(card).join('');
+    var html = one, copies = 1;
+    trackEl.innerHTML = html;
+    var need = (window.innerWidth || 360) * 2;
+    while ((copies < 2 || (trackEl.scrollWidth && trackEl.scrollWidth < need)) && copies < 8) {
+      html += one; copies++;
+      trackEl.innerHTML = html;
+    }
+    rowEl.dataset.copies = copies;
+    rowEl.dataset.unit = trackEl.scrollWidth
+      ? Math.round(trackEl.scrollWidth / copies) : 0;
+  }
+
   function renderRibbon() {
-    var sec = $('wishes'), track = $('ribbonTrack');
-    if (!sec || !track || !ribbonItems.length) return;
+    var sec = $('wishes');
+    if (!sec || !ribbonItems.length) return;
 
-    var html = ribbonItems.map(function (w) {
-      return '<div class="wishcard"><b>' + esc(w.name) + '</b><p>' + esc(w.wish) + '</p></div>';
-    }).join('');
-    track.innerHTML = html + html;   // uzluksiz aylanish uchun ikki nusxa
+    // Avval ko'rsatamiz — yashirin holatda o'lchamlar 0 chiqadi
+    var first = sec.hidden;
+    if (first) sec.hidden = false;
 
-    var secs = Math.max(28, ribbonItems.length * 7);
-    track.style.setProperty('--rspeed', secs + 's');
+    // 5 tagacha — bitta qator; ko'p bo'lsa juft/toq bo'lib ikki qatorga
+    var a = [], b = [];
+    if (ribbonItems.length <= 5) { a = ribbonItems.slice(); }
+    else {
+      ribbonItems.forEach(function (w, i) { (i % 2 ? b : a).push(w); });
+    }
+    fillRow($('rib1'), $('ribTrack1'), a);
+    fillRow($('rib2'), $('ribTrack2'), b);
 
-    if (sec.hidden) {
-      sec.hidden = false;
+    if (first) {
       if (io) { sec.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); }); }
       if (!reduced) buildThread();
+      startDrift();
     }
   }
+
+  /* ── Ohista oqim + qo'l bilan surish ──
+     Qator — haqiqiy scroll konteyner. Avto-oqim scrollLeft'ni sekin suradi;
+     mehmon tegsa to'xtaydi, qo'yib yuborganidan 2.5s keyin davom etadi. */
+  var driftOn = false;
+  function startDrift() {
+    if (driftOn || reduced) return;
+    driftOn = true;
+
+    var rows = [
+      { el: $('rib1'), dir: 1, hold: 0, until: 0, inited: false },
+      { el: $('rib2'), dir: -1, hold: 0, until: 0, inited: false }
+    ];
+
+    rows.forEach(function (r) {
+      if (!r.el) return;
+      var stop = function () { r.hold = 1; };
+      var go = function () { r.hold = 0; r.until = Date.now() + 2500; };
+      r.el.addEventListener('touchstart', stop, { passive: true });
+      r.el.addEventListener('touchend', go, { passive: true });
+      r.el.addEventListener('touchcancel', go, { passive: true });
+      r.el.addEventListener('mousedown', stop);
+      r.el.addEventListener('mouseup', go);
+      r.el.addEventListener('mouseleave', function () { if (r.hold) go(); });
+      // Inersiya scroll paytida ham oqim aralashmasin
+      r.el.addEventListener('scroll', function () {
+        if (!r.hold) r.until = Math.max(r.until, Date.now() + 1200);
+      }, { passive: true });
+    });
+
+    var visible = true;
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (en) { visible = en[0].isIntersecting; })
+        .observe($('wishes'));
+    }
+
+    (function tick() {
+      if (visible && !document.hidden) {
+        var now = Date.now();
+        rows.forEach(function (r) {
+          if (!r.el || r.el.hidden || r.hold || now < r.until) return;
+          // O'lcham har kadrda jonli hisoblanadi — shrift kelishi, resize,
+          // panel holati o'zgarishi hech narsani buzmaydi
+          var copies = parseInt(r.el.dataset.copies, 10) || 1;
+          var unit = Math.round(r.el.scrollWidth / copies);
+          if (!unit || r.el.scrollWidth <= r.el.clientWidth + 4) return;
+          if (!r.inited) {
+            r.inited = true;
+            if (r.dir < 0) r.el.scrollLeft = unit;   // teskari qator o'z uchidan boshlaydi
+          }
+          var x = r.el.scrollLeft + r.dir * 0.45;
+          // Halqa: kontent har "unit"da takrorlanadi — sakrash sezilmaydi
+          if (x >= unit) x -= unit; else if (x <= 0) x += unit;
+          r.el.scrollLeft = x;
+        });
+      }
+      requestAnimationFrame(tick);
+    })();
+  }
+
   // Qaytgan mehmon: tilak maydoni/rahmat holatini tiklaymiz
   if (prev && prev.answer) syncWishUI(prev);
 
