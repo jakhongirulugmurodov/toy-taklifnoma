@@ -497,6 +497,7 @@
 
   /* ══════════ 11. GIRIH PARALLAKSI + OLTIN IP ══════════ */
   var threadPath = null, threadRect = null, threadLen = 0;
+  var threadNodes = [], threadEnd = null;
 
   function buildThread() {
     var main = $('main');
@@ -518,7 +519,7 @@
        saralanmagan nuqtalar ipni orqaga qaytarib, bir joyda bir nechta
        parallel chiziq hosil qiladi. */
     var ys = secs
-      .map(function (sec) { return sec.offsetTop + Math.min(120, sec.offsetHeight * 0.25); })
+      .map(function (sec) { return sec.offsetTop + Math.min(44, sec.offsetHeight * 0.12); })
       .filter(function (y) { return y > startY + 60; })
       .sort(function (a, b) { return a - b; });
 
@@ -559,41 +560,93 @@
     clip.appendChild(threadRect);
 
     threadPath = document.createElementNS(NS, 'path');
+    threadPath.setAttribute('class', 'thread__line');
     threadPath.setAttribute('d', d);
     threadPath.setAttribute('clip-path', 'url(#threadClip)');
 
     svg.appendChild(clip);
     svg.appendChild(threadPath);
+
+    /* ── Tugunlar: ip yo'l, tugunlar bekat ──
+       DIQQAT: joylashuv (translate) TASHQI <g> da, animatsiya (scale/rotate)
+       ICHKI <g> da. CSS transform SVG transform atributini bekor qiladi —
+       ikkalasi bitta elementda bo'lsa tugun 0,0 ga ko'chib ketadi. */
+    function mk(tag, attrs) {
+      var el = document.createElementNS(NS, tag);
+      for (var a in attrs) el.setAttribute(a, attrs[a]);
+      return el;
+    }
+
+    threadNodes = [];
+    for (var k = 1; k < pts.length - 1; k++) {
+      var pos = mk('g', { transform: 'translate(' + pts[k][0] + ',' + pts[k][1] + ')' });
+      var node = mk('g', { 'class': 'thread__node' });
+      node.appendChild(mk('circle', { r: 10, 'class': 'thread__halo' }));
+      node.appendChild(mk('path', { d: 'M0 -5.5 5.5 0 0 5.5 -5.5 0Z', 'class': 'thread__dia' }));
+      pos.appendChild(node);
+      svg.appendChild(pos);
+      node.dataset.y = pts[k][1];
+      threadNodes.push(node);
+    }
+
+    /* ── Yakun: ip uzilib qolmaydi, naqsh bilan tugaydi ── */
+    var last = pts[pts.length - 1];
+    var endPos = mk('g', { transform: 'translate(' + last[0] + ',' + last[1] + ')' });
+    var end = mk('g', { 'class': 'thread__end' });
+    end.appendChild(mk('path', { d: 'M-96 0 H-39 M39 0 H96', 'class': 'thread__end-wing' }));
+    end.appendChild(mk('path', { d: 'M-18 0 -27 -6 -27 6Z M18 0 27 -6 27 6Z', 'class': 'thread__end-tip' }));
+    end.appendChild(mk('path', { d: 'M0 -9 9 0 0 9 -9 0Z', 'class': 'thread__end-dia' }));
+    endPos.appendChild(end);
+    svg.appendChild(endPos);
+    end.dataset.y = last[1];
+    threadEnd = end;
+
     main.insertBefore(svg, main.firstChild);
     threadLen = H;
+    paintThread();
   }
 
   /* Silliqlik CSS transition zimmasida — rAF siklga bog'liq emas,
      quvvat-tejash rejimida ham sinmaydi */
-  var rafOn = false, lastThread = 0;
-  function rafLoop() {
-    rafOn = false;
-    // Ip qaralayotgan joygacha "tikiladi" — 110ms dan tez-tez emas,
-    // oradagi silliqlikni CSS transition beradi
-    var now = Date.now();
-    if (now - lastThread < 110) return;
-    lastThread = now;
-    if (threadRect && threadLen) {
-      var goal = Math.max(0, Math.min(threadLen,
-        (window.scrollY || 0) + window.innerHeight * 0.78));
-      threadRect.setAttribute('height', goal.toFixed(0));
+  var lastThread = 0, threadTimer = null;
+
+  /* Ip qaralayotgan joygacha "tikiladi", yetib kelgan tugunlar yonadi.
+     rAF ishlatilmaydi — sahifa old planda bo'lmasa u butunlay to'xtaydi. */
+  function paintThread() {
+    if (!threadRect || !threadLen) return;
+    var goal = Math.max(0, Math.min(threadLen,
+      (window.scrollY || 0) + window.innerHeight * 0.78));
+    threadRect.setAttribute('height', goal.toFixed(0));
+
+    for (var i = 0; i < threadNodes.length; i++) {
+      var n = threadNodes[i];
+      if (!n.__lit && goal >= (+n.dataset.y) - 8) {
+        n.__lit = true;
+        n.classList.add('is-lit');
+      }
+    }
+    if (threadEnd && !threadEnd.__lit && goal >= (+threadEnd.dataset.y) - 8) {
+      threadEnd.__lit = true;
+      threadEnd.classList.add('is-lit');
     }
   }
-  function queueRaf() {
-    if (!rafOn) { rafOn = true; requestAnimationFrame(rafLoop); }
+
+  function queueThread() {
+    var now = Date.now();
+    if (now - lastThread >= 100) { lastThread = now; paintThread(); return; }
+    if (threadTimer) return;
+    threadTimer = setTimeout(function () {
+      threadTimer = null; lastThread = Date.now(); paintThread();
+    }, 100);
   }
+
   if (!reduced) {
-    window.addEventListener('scroll', queueRaf, { passive: true });
-    window.addEventListener('load', function () { buildThread(); rafLoop(); });
+    window.addEventListener('scroll', queueThread, { passive: true });
+    window.addEventListener('load', function () { buildThread(); });
     var rsz;
     window.addEventListener('resize', function () {
       clearTimeout(rsz);
-      rsz = setTimeout(function () { buildThread(); rafLoop(); }, 250);
+      rsz = setTimeout(function () { buildThread(); }, 250);
     });
   }
 

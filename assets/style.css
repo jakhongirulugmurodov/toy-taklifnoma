@@ -568,12 +568,34 @@ html.no-js .hero .ornament,html.no-js .hero__meta,html.no-js .scroll-cue{
   position:absolute;top:0;left:0;width:100%;
   pointer-events:none;z-index:1;
 }
-.thread path{
+/* Faqat ipning o'zi punktir — naqsh qismlariga tegmasin */
+.thread__line{
   fill:none;stroke:var(--gold);stroke-width:1.2;
   stroke-dasharray:4 7;stroke-linecap:round;
   opacity:.45;
 }
 .thread rect{transition:height 1.1s var(--ease)}
+
+/* ── Tugunlar: ip yetib kelganda yonadi ── */
+.thread__node,.thread__end{
+  opacity:0;
+  transform-box:fill-box;transform-origin:center;
+  transition:opacity .6s var(--ease),transform .6s var(--ease);
+}
+.thread__node{transform:scale(.3) rotate(-25deg)}
+.thread__node.is-lit{opacity:1;transform:scale(1) rotate(0)}
+.thread__dia{fill:var(--gold);stroke:none;opacity:.9}
+.thread__halo{
+  fill:none;stroke:var(--gold);stroke-width:1;opacity:0;
+  transition:opacity .5s var(--ease) .15s;
+}
+.thread__node.is-lit .thread__halo{opacity:.3}
+
+.thread__end{transform:scale(.5)}
+.thread__end.is-lit{opacity:1;transform:scale(1)}
+.thread__end-wing{stroke:var(--gold);fill:none;stroke-width:1;opacity:.7}
+.thread__end-tip{fill:var(--gold);stroke:none;opacity:.85}
+.thread__end-dia{fill:none;stroke:var(--gold);stroke-width:1.2;opacity:.85}
 
 /* ══════════ HERO ZARRALARI ══════════ */
 .spark{
