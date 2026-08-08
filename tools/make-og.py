@@ -104,7 +104,7 @@ d.line([(W / 2 + 46, oy), (W / 2 + 190, oy)], fill=GOLD, width=2)
 d.polygon([(W / 2, oy - 12), (W / 2 + 12, oy), (W / 2, oy + 12), (W / 2 - 12, oy)], outline=GOLD, width=2)
 
 tracked(d, '17 AVGUST 2026   ·   SOAT 19:00', f_meta, 526, CREAM, track=5)
-tracked(d, '«GRAND ASIA» TO’YXONASI  ·  ISHTIXON', f_place, 563, GOLD_LT, track=4)
+tracked(d, '«GRANT ASIA» RESTORANI  ·  ISHTIXON', f_place, 563, GOLD_LT, track=4)
 
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
 img.save(OUT, 'PNG', optimize=True)

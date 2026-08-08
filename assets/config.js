@@ -16,8 +16,8 @@ window.TOY = {
 
   /* Tadbir ma'lumotlari (kalendar fayli uchun) */
   title: "Sohibjon va Dilnozaxon — nikoh to'yi",
-  place: "«Grand Asia» to'yxonasi, Ishtixon tumani, Samarqand viloyati",
+  place: "«Grant Asia» restorani, Guliston ko'chasi 50A, Ishtixon, Samarqand viloyati",
 
   /* Xaritada ko'rsatiladigan nuqta */
-  mapQuery: "Grand Asia to'yxonasi Ishtixon Samarqand"
+  mapQuery: "39.954992,66.490685"
 };

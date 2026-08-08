@@ -2,7 +2,7 @@
 
 Mobil-birinchi onlayn taklifnoma + mehmonlar javoblarini ko'rish uchun admin panel.
 
-**To'y:** 17-avgust 2026, soat 19:00 · «Grand Asia» to'yxonasi, Ishtixon.
+**To'y:** 17-avgust 2026, soat 19:00 · «Grant Asia» restorani, Guliston ko'chasi 50A, Ishtixon.
 
 ---
 
