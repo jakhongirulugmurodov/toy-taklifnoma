@@ -745,63 +745,59 @@
     }
   }
 
-  /* ── Ohista oqim + qo'l bilan surish ──
-     Qator — haqiqiy scroll konteyner. Avto-oqim scrollLeft'ni sekin suradi;
-     mehmon tegsa to'xtaydi, qo'yib yuborganidan 2.5s keyin davom etadi. */
+  /* ── Uzluksiz oqim + qo'l bilan surish ──
+     Qator — haqiqiy scroll konteyner. Oqim HECH QACHON to'xtamaydi;
+     mehmon barmog'i bilan sursa, oqim shu yangi joydan davom etaveradi —
+     ya'ni tezlik yetarli bo'lmasa qo'l bilan oldinga o'tib ketish mumkin.
+
+     Taymer (rAF emas): sur'at vaqtga bog'liq, shuning uchun kadr chastotasi
+     tushsa ham bir xil qoladi; fonda brauzer taymerni o'zi siyraklashtiradi. */
   var driftOn = false;
+  var SPEED = 27;            // piksel / soniya
   function startDrift() {
     if (driftOn || reduced) return;
     driftOn = true;
 
     var rows = [
-      { el: $('rib1'), dir: 1, hold: 0, until: 0, inited: false },
-      { el: $('rib2'), dir: -1, hold: 0, until: 0, inited: false }
+      { el: $('rib1'), dir: 1, inited: false },
+      { el: $('rib2'), dir: -1, inited: false }
     ];
 
-    rows.forEach(function (r) {
-      if (!r.el) return;
-      var stop = function () { r.hold = 1; };
-      var go = function () { r.hold = 0; r.until = Date.now() + 2500; };
-      r.el.addEventListener('touchstart', stop, { passive: true });
-      r.el.addEventListener('touchend', go, { passive: true });
-      r.el.addEventListener('touchcancel', go, { passive: true });
-      r.el.addEventListener('mousedown', stop);
-      r.el.addEventListener('mouseup', go);
-      r.el.addEventListener('mouseleave', function () { if (r.hold) go(); });
-      // Inersiya scroll paytida ham oqim aralashmasin
-      r.el.addEventListener('scroll', function () {
-        if (!r.hold) r.until = Math.max(r.until, Date.now() + 1200);
-      }, { passive: true });
-    });
-
-    var visible = true;
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(function (en) { visible = en[0].isIntersecting; })
-        .observe($('wishes'));
+    /* Ko'rinmayotgan bo'limda bekorga ishlamaymiz.
+       IntersectionObserver emas, to'g'ridan-to'g'ri o'lchov: IO sahifa
+       fonda bo'lganda qayta hisoblamaydi va "ko'rinmayapti"da qotib qoladi. */
+    var sec = $('wishes');
+    function onScreen() {
+      var r = sec.getBoundingClientRect();
+      return r.bottom > -120 && r.top < (window.innerHeight || 0) + 120;
     }
 
-    (function tick() {
-      if (visible && !document.hidden) {
-        var now = Date.now();
-        rows.forEach(function (r) {
-          if (!r.el || r.el.hidden || r.hold || now < r.until) return;
-          // O'lcham har kadrda jonli hisoblanadi — shrift kelishi, resize,
-          // panel holati o'zgarishi hech narsani buzmaydi
-          var copies = parseInt(r.el.dataset.copies, 10) || 1;
-          var unit = Math.round(r.el.scrollWidth / copies);
-          if (!unit || r.el.scrollWidth <= r.el.clientWidth + 4) return;
-          if (!r.inited) {
-            r.inited = true;
-            if (r.dir < 0) r.el.scrollLeft = unit;   // teskari qator o'z uchidan boshlaydi
-          }
-          var x = r.el.scrollLeft + r.dir * 0.45;
-          // Halqa: kontent har "unit"da takrorlanadi — sakrash sezilmaydi
-          if (x >= unit) x -= unit; else if (x <= 0) x += unit;
-          r.el.scrollLeft = x;
-        });
-      }
-      requestAnimationFrame(tick);
-    })();
+    var last = Date.now();
+    setInterval(function () {
+      var now = Date.now();
+      // Fonda taymer siyraklashsa — sakramasin deb qadamni cheklaymiz
+      var dt = Math.min(100, now - last);
+      last = now;
+      if (!onScreen()) return;
+
+      var step = SPEED * dt / 1000;
+      rows.forEach(function (r) {
+        if (!r.el || r.el.hidden) return;
+        // O'lcham har qadamda jonli hisoblanadi — shrift kelishi, resize,
+        // panel holati o'zgarishi hech narsani buzmaydi
+        var copies = parseInt(r.el.dataset.copies, 10) || 1;
+        var unit = Math.round(r.el.scrollWidth / copies);
+        if (!unit || r.el.scrollWidth <= r.el.clientWidth + 4) return;
+        if (!r.inited) {
+          r.inited = true;
+          if (r.dir < 0) r.el.scrollLeft = unit;   // teskari qator o'z uchidan boshlaydi
+        }
+        var x = r.el.scrollLeft + r.dir * step;
+        // Halqa: kontent har "unit"da takrorlanadi — sakrash sezilmaydi
+        if (x >= unit) x -= unit; else if (x <= 0) x += unit;
+        r.el.scrollLeft = x;
+      });
+    }, 30);
   }
 
   // Qaytgan mehmon: tilak maydoni/rahmat holatini tiklaymiz
