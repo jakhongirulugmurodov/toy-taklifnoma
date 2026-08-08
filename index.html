@@ -23,8 +23,10 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa&family=Marcellus&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css?v=3">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa&family=Marcellus&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500&display=swap"
+      onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa&family=Marcellus&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500&display=swap"></noscript>
+<link rel="stylesheet" href="assets/style.css?v=4">
 <script>document.documentElement.classList.remove('no-js');</script>
 </head>
 <body>
@@ -55,7 +57,7 @@
   <span class="music__bars" aria-hidden="true"><i></i><i></i><i></i></span>
   <span class="music__off" aria-hidden="true"></span>
 </button>
-<audio id="bgMusic" loop preload="metadata" playsinline>
+<audio id="bgMusic" loop preload="none" playsinline>
   <source src="assets/music.m4a" type="audio/mp4">
 </audio>
 
@@ -89,7 +91,7 @@
     <figure class="arch reveal">
       <div class="arch__inner">
         <div class="girih" aria-hidden="true"></div>
-        <img id="couplePhoto" src="assets/couple-1.jpg" alt="Sohibjon va Dilnozaxon" hidden>
+        <img id="couplePhoto" src="assets/couple-1.jpg" alt="Sohibjon va Dilnozaxon" decoding="async" hidden>
         <span class="arch__mono foil" id="archMono" aria-hidden="true">S<i>◆</i>D</span>
       </div>
     </figure>
@@ -198,7 +200,7 @@
 
 <!-- ═══════════ RASM LENTASI ═══════════ -->
 <section class="band reveal" id="band" hidden>
-  <img id="bandPhoto" src="assets/couple-2.jpg" alt="Sohibjon va Dilnozaxon">
+  <img id="bandPhoto" src="assets/couple-2.jpg" alt="Sohibjon va Dilnozaxon" decoding="async">
   <div class="band__veil" aria-hidden="true"></div>
   <p class="band__line">Ikki qalb — bir taqdir<span>17 · 08 · 2026</span></p>
 </section>
@@ -288,6 +290,17 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="assets/config.js"></script>
-<script src="assets/app.js?v=3"></script>
+<script src="assets/app.js?v=4"></script>
+<script>
+/* Zaxira: skript yiqilgan bo'lsa ham mehmon taklifnomani ko'raveradi */
+if (!window.__toyReady) {
+  (function () {
+    var s = document.getElementById('seal');
+    if (s) s.style.display = 'none';
+    document.body.classList.remove('is-locked');
+    document.body.classList.add('opened');
+  })();
+}
+</script>
 </body>
 </html>

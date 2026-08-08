@@ -63,9 +63,10 @@
       if (pref() !== 'off') musicOn(false);
     }, 430);
 
-    setTimeout(function () { seal.classList.add('is-gone'); }, 1700);
+    setTimeout(function () { seal.classList.add('is-gone'); }, 2600);
   }
   sealBtn.addEventListener('click', openInvite);
+  window.__toyReady = true;
 
   /* ══════════ 2. MUSIQA ══════════ */
   var music = $('bgMusic'), musicBtn = $('musicBtn');
@@ -76,13 +77,19 @@
   function setPref(v) { try { localStorage.setItem(PREF, v); } catch (e) {} }
 
   // Fayl bo'lmasa tugma ham, muhrdagi eslatma ham chiqmaydi
+  var musicWanted = false;   // muhr audio tayyor bo'lishidan OLDIN bosilgan bo'lsa
   music.addEventListener('loadedmetadata', function () {
     hasAudio = true;
     musicBtn.hidden = false;
     var hint = document.querySelector('.seal__music');
     if (hint) hint.hidden = false;
+    if (musicWanted && pref() !== 'off') musicOn(false);
   });
   music.addEventListener('error', function () { hasAudio = false; musicBtn.hidden = true; });
+  // Sahifa yuklanib bo'lgachgina audio so'raladi (sekin internetda renderga xalaqit bermasin)
+  window.addEventListener('load', function () {
+    setTimeout(function () { try { music.load(); } catch (e) {} }, 600);
+  });
 
   function paint(on) {
     playing = on;
@@ -108,7 +115,7 @@
   }
 
   function musicOn(quiet) {
-    if (!hasAudio) return;
+    if (!hasAudio) { musicWanted = true; return; }   // tayyor bo'lgach o'zi boshlanadi
     music.volume = 0;
     music.play().then(function () {
       paint(true);
@@ -549,17 +556,17 @@
 
   /* Silliqlik CSS transition zimmasida — rAF siklga bog'liq emas,
      quvvat-tejash rejimida ham sinmaydi */
-  var rafOn = false;
+  var rafOn = false, lastThread = 0;
   function rafLoop() {
     rafOn = false;
-    var sc = window.scrollY || 0;
-
-    // Girih naqshi sahifadan sekinroq suriladi — chuqurlik hissi
-    document.documentElement.style.setProperty('--gy', (sc * 0.09).toFixed(1) + 'px');
-
-    // Ip qaralayotgan joygacha "tikiladi"
+    // Ip qaralayotgan joygacha "tikiladi" — 110ms dan tez-tez emas,
+    // oradagi silliqlikni CSS transition beradi
+    var now = Date.now();
+    if (now - lastThread < 110) return;
+    lastThread = now;
     if (threadRect && threadLen) {
-      var goal = Math.max(0, Math.min(threadLen, sc + window.innerHeight * 0.78));
+      var goal = Math.max(0, Math.min(threadLen,
+        (window.scrollY || 0) + window.innerHeight * 0.78));
       threadRect.setAttribute('height', goal.toFixed(0));
     }
   }
