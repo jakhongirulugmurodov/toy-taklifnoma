@@ -512,9 +512,23 @@
 
     var pts = [[W / 2, startY]];
     var amp = Math.min(96, W * 0.2);
-    secs.forEach(function (sec, i) {
-      var y = sec.offsetTop + Math.min(120, sec.offsetHeight * 0.25);
-      if (y > startY + 60) pts.push([W / 2 + (i % 2 ? -amp : amp), y]);
+
+    /* Nuqtalar HAR DOIM pastga qarab borishi shart. Bo'limlar ro'yxati
+       sahifadagi tartibdan farq qilsa (masalan tilaklar RSVP'dan keyin),
+       saralanmagan nuqtalar ipni orqaga qaytarib, bir joyda bir nechta
+       parallel chiziq hosil qiladi. */
+    var ys = secs
+      .map(function (sec) { return sec.offsetTop + Math.min(120, sec.offsetHeight * 0.25); })
+      .filter(function (y) { return y > startY + 60; })
+      .sort(function (a, b) { return a - b; });
+
+    var side = 1;
+    ys.forEach(function (y) {
+      var dy = y - pts[pts.length - 1][1];
+      if (dy < 90) return;                        // juda yaqin — burilish hunuk chiqadi
+      var a = Math.min(amp, dy * 0.38);           // tik burilish bo'lmasin
+      pts.push([W / 2 + side * a, y]);
+      side = -side;
     });
     pts.push([W / 2, H - 40]);
     if (pts.length < 3) return;
