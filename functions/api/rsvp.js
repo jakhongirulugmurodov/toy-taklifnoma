@@ -69,14 +69,32 @@ async function notify(env, name, answer, isUpdate) {
   if (isUpdate) lines.push('<i>javobini o‘zgartirdi</i>');
   if (counts) lines.push('', `Jami: ${counts.y || 0} kelaman · ${counts.n || 0} yo‘q`);
 
-  await fetch(`https://api.telegram.org/bot${env.TG_TOKEN}/sendMessage`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      chat_id: env.TG_CHAT,
-      text: lines.join('\n'),
-      parse_mode: 'HTML',
-      link_preview_options: { is_disabled: true }
-    })
-  }).catch(() => {});
+  const text = lines.join('\n');
+  const sent = await send(env, env.TG_CHAT, text);
+
+  /* Oddiy guruh superguruhga aylansa Telegram chat_id ni almashtiradi va
+     eski ID ishlamay qoladi. Telegram yangi ID ni xatoning ichida beradi —
+     shu bilan bir marta qayta urinamiz, xabar yo'qolib ketmasin. */
+  if (sent && sent.ok === false) {
+    const moved = sent.parameters && sent.parameters.migrate_to_chat_id;
+    if (moved) await send(env, moved, text);
+  }
+}
+
+async function send(env, chatId, text) {
+  try {
+    const r = await fetch(`https://api.telegram.org/bot${env.TG_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text,
+        parse_mode: 'HTML',
+        link_preview_options: { is_disabled: true }
+      })
+    });
+    return await r.json();
+  } catch {
+    return null;
+  }
 }
