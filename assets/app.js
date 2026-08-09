@@ -467,6 +467,117 @@
     chosen = prev.answer;
   }
 
+  /* ══════════ MAKTUBLAR — tilaklarni to'liq o'qish ══════════ */
+  var UZ_OY = ['yanvar','fevral','mart','aprel','may','iyun',
+               'iyul','avgust','sentabr','oktabr','noyabr','dekabr'];
+
+  var lettersEl = $('letters'), letterCard = $('letterCard');
+  var lIdx = 0, lOpen = false;
+
+  function lDate(raw) {
+    if (!raw) return '';
+    // D1 "2026-08-09 05:12:33" beradi — Safari uni o'zi tushunmaydi
+    var d = new Date(String(raw).replace(' ', 'T') + (String(raw).indexOf('Z') < 0 ? 'Z' : ''));
+    if (isNaN(d)) return '';
+    return d.getDate() + '-' + UZ_OY[d.getMonth()] + ' ' + d.getFullYear();
+  }
+
+  function lRender(dir) {
+    var w = ribbonItems[lIdx];
+    if (!w) return;
+    var paint = function () {
+      $('letterBody').textContent = w.wish || '';
+      $('letterName').textContent = w.name || '—';
+      $('letterDate').textContent = lDate(w.at);
+      $('letterCount').textContent = (lIdx + 1) + ' / ' + ribbonItems.length;
+      $('letterPrev').disabled = lIdx === 0;
+      $('letterNext').disabled = lIdx === ribbonItems.length - 1;
+    };
+
+    if (!dir || reduced) { paint(); return; }
+    // Eski maktub chetga chiqadi, yangisi qarama-qarshi tomondan keladi
+    letterCard.classList.add(dir > 0 ? 'is-out-l' : 'is-out-r');
+    setTimeout(function () {
+      paint();
+      letterCard.classList.remove('is-out-l', 'is-out-r');
+      letterCard.classList.add(dir > 0 ? 'is-out-r' : 'is-out-l');
+      void letterCard.offsetWidth;
+      letterCard.classList.remove('is-out-l', 'is-out-r');
+    }, 300);
+  }
+
+  function lGo(step) {
+    var next = lIdx + step;
+    if (next < 0 || next >= ribbonItems.length) return;
+    lIdx = next;
+    lRender(step);
+    var hint = $('lettersHint');
+    if (hint) hint.style.opacity = '0';
+  }
+
+  function lOpenAt(i) {
+    if (!ribbonItems.length) return;
+    lIdx = Math.max(0, Math.min(ribbonItems.length - 1, i || 0));
+    lettersEl.hidden = false;
+    document.body.classList.add('is-locked');
+    lOpen = true;
+    lRender(0);
+    void lettersEl.offsetWidth;        // reflow — o'tish shu yerdan boshlanadi
+    lettersEl.classList.add('is-on');  // (rAF ishlatilmaydi: fon sahifada u o'lik)
+  }
+
+  function lClose() {
+    lettersEl.classList.remove('is-on');
+    lOpen = false;
+    document.body.classList.remove('is-locked');
+    setTimeout(function () { lettersEl.hidden = true; }, reduced ? 0 : 380);
+  }
+
+  $('wishAll').addEventListener('click', function () { lOpenAt(0); });
+  $('lettersX').addEventListener('click', lClose);
+  $('letterPrev').addEventListener('click', function () { lGo(-1); });
+  $('letterNext').addEventListener('click', function () { lGo(1); });
+
+  document.addEventListener('keydown', function (e) {
+    if (!lOpen) return;
+    if (e.key === 'Escape') lClose();
+    else if (e.key === 'ArrowLeft') lGo(-1);
+    else if (e.key === 'ArrowRight') lGo(1);
+  });
+
+  /* Surish — maktubni varaqlash */
+  (function () {
+    var x0 = null, y0 = null;
+    lettersEl.addEventListener('touchstart', function (e) {
+      x0 = e.touches[0].clientX; y0 = e.touches[0].clientY;
+    }, { passive: true });
+    lettersEl.addEventListener('touchend', function (e) {
+      if (x0 === null) return;
+      var dx = e.changedTouches[0].clientX - x0;
+      var dy = e.changedTouches[0].clientY - y0;
+      x0 = null;
+      // Tik harakat bo'lsa — bu matnni siljitish, varaqlamaymiz
+      if (Math.abs(dx) < 45 || Math.abs(dx) < Math.abs(dy)) return;
+      lGo(dx < 0 ? 1 : -1);
+    }, { passive: true });
+  })();
+
+  /* Lentadagi kartaga bosilsa — o'sha tilak maktub bo'lib ochiladi */
+  ['rib1', 'rib2'].forEach(function (id) {
+    var row = $(id);
+    if (!row) return;
+    row.addEventListener('click', function (e) {
+      var card = e.target.closest && e.target.closest('.wishcard');
+      if (!card) return;
+      var nm = card.querySelector('b');
+      var key = nm ? nm.textContent : '';
+      for (var i = 0; i < ribbonItems.length; i++) {
+        if (ribbonItems[i].name === key) { lOpenAt(i); return; }
+      }
+      lOpenAt(0);
+    });
+  });
+
   /* ══════════ 10. OLTIN CHANG ══════════ */
   function dust(cx, cy, n, spread, fall) {
     if (reduced || !document.body.animate) return;
@@ -804,6 +915,9 @@
     }
     fillRow($('rib1'), $('ribTrack1'), a);
     fillRow($('rib2'), $('ribTrack2'), b);
+
+    var cnt = $('wishAllN');
+    if (cnt) cnt.textContent = '· ' + ribbonItems.length;
 
     if (first) {
       if (io) { sec.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); }); }

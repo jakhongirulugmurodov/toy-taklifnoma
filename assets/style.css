@@ -713,3 +713,92 @@ html.no-js .hero .ornament,html.no-js .hero__meta,html.no-js .scroll-cue{
   .girih,.hero__frame,.corner{display:none}
   .reveal{opacity:1;transform:none}
 }
+
+/* ══════════════════════════════════════════════════
+   MAKTUBLAR — tilaklarni to'liq o'qish
+   ══════════════════════════════════════════════════ */
+.wishes__foot{margin-top:22px;text-align:center}
+.wishes__all{padding:14px 30px;font-size:.74rem}
+.wishes__all b{font-weight:500;color:var(--gold-dk);margin-left:7px}
+
+.letters{
+  position:fixed;inset:0;z-index:95;overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:64px 22px 96px;
+  background:radial-gradient(120% 82% at 50% 12%,var(--teal-600),var(--teal-700) 40%,var(--teal-900));
+  opacity:0;transition:opacity .4s var(--ease);
+}
+.letters.is-on{opacity:1}
+.letters__eye{
+  position:absolute;top:30px;left:0;right:0;text-align:center;
+  font-size:.58rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-lt);
+}
+.letters__x{
+  position:absolute;top:22px;right:18px;z-index:3;
+  width:34px;height:34px;border-radius:50%;
+  border:1px solid rgba(201,162,75,.5);color:var(--gold-lt);
+  display:flex;align-items:center;justify-content:center;font-size:.9rem;
+}
+.letters__stage{width:100%;max-width:400px;position:relative;z-index:2}
+
+.letter{
+  background:var(--cream);border-radius:6px;
+  padding:34px 24px 22px;position:relative;
+  box-shadow:0 22px 54px rgba(0,0,0,.34);
+  transform:rotate(-1deg);
+  transition:transform .32s var(--ease),opacity .32s var(--ease);
+}
+.letter::before{content:"";position:absolute;inset:9px;border:1px solid rgba(201,162,75,.35);border-radius:3px;pointer-events:none}
+.letter.is-out-l{transform:translateX(-26%) rotate(-5deg);opacity:0}
+.letter.is-out-r{transform:translateX(26%) rotate(3deg);opacity:0}
+
+.letter__wax{
+  position:absolute;top:-19px;left:50%;transform:translateX(-50%);
+  width:44px;height:44px;border-radius:50%;background:var(--foil);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Marcellus',serif;font-size:.76rem;color:#3E3110;
+  box-shadow:0 6px 16px rgba(0,0,0,.32);
+}
+.letter__wax i{font-style:normal;opacity:.7;margin:0 2px}
+.letter__to{
+  text-align:center;margin-bottom:14px;
+  font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-dk);
+}
+.letter__body{
+  font-family:'Caveat',cursive;font-size:1.42rem;line-height:1.55;
+  color:#33332C;text-align:center;
+  min-height:180px;max-height:44vh;overflow-y:auto;
+  display:flex;align-items:center;justify-content:center;
+  padding:0 4px;
+}
+.letter__sign{
+  margin-top:16px;padding-top:11px;text-align:right;
+  border-top:1px solid rgba(201,162,75,.3);
+}
+.letter__sign b{display:block;font-family:'Marcellus',serif;font-weight:400;font-size:.94rem;color:var(--teal-800)}
+.letter__sign span{font-size:.6rem;letter-spacing:.1em;color:#A9A79E}
+
+.letters__hint{
+  position:absolute;bottom:74px;left:0;right:0;text-align:center;
+  font-size:.58rem;letter-spacing:.24em;text-transform:uppercase;
+  color:rgba(250,244,231,.5);transition:opacity .4s ease;
+}
+.letters__nav{
+  position:absolute;bottom:calc(24px + env(safe-area-inset-bottom));left:0;right:0;
+  display:flex;align-items:center;justify-content:center;gap:16px;color:var(--gold-lt);z-index:3;
+}
+.letters__ar{
+  width:38px;height:38px;border-radius:50%;
+  border:1px solid rgba(201,162,75,.5);color:var(--gold-lt);
+  display:flex;align-items:center;justify-content:center;font-size:1rem;
+  transition:background .2s ease;
+}
+.letters__ar:hover{background:rgba(235,214,155,.12)}
+.letters__ar[disabled]{opacity:.32}
+.letters__ct{font-size:.76rem;letter-spacing:.12em;font-variant-numeric:tabular-nums;min-width:64px;text-align:center}
+
+@media (max-width:400px){
+  .letters{padding:60px 16px 92px}
+  .letter{padding:30px 18px 20px}
+  .letter__body{font-size:1.3rem;min-height:160px}
+}
