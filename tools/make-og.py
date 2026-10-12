@@ -101,10 +101,11 @@ f_name = font(SERIF, 136)
 f_sub = font(ITALIC, 44)
 f_place = font(SANS, 23)
 
-# Sana bu rasmga yozilmaydi: u config.js da o'zgarsa rasm eskirib qolmasin
-tracked(d, "NIKOH TO'YI MUNOSABATI BILAN", f_eye, 140, GOLD_LT, track=9)
+# Bitta rasm erkaklar va ayollar havolasida ham chiqadi — shuning uchun
+# vaqt yozilmaydi, faqat sana. Sana config.js da o'zgarsa, rasmni qayta yasang.
+tracked(d, "NIKOH TO'YIGA TAKLIFNOMA", f_eye, 140, GOLD_LT, track=9)
 tracked(d, 'Islombek', f_name, 196, GOLD_LT, track=3)
-tracked(d, 'nahorgi oshga taklif etamiz', f_sub, 368, GOLD, track=1)
+tracked(d, '31-oktabr, 2026  ·  shanba', f_sub, 368, GOLD, track=1)
 
 # ornament
 oy = 462

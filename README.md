@@ -1,4 +1,4 @@
-# Islombek — nikoh to'yi taklifnomasi (nahorgi osh)
+# Islombek — nikoh to'yi taklifnomasi
 
 Mobil-birinchi onlayn taklifnoma. Mijoz talabi bilan: faqat kuyov ismi, mehrobda rasm o'rniga
 illyustratsiya, "Tadbir dasturi" va "Kelasizmi?" bo'limlari yo'q — backend ham yo'q, sof statik sayt.
@@ -49,7 +49,7 @@ Trek muallifiga tegishli; sayt shaxsiy taklifnoma sifatida ishlatilmoqda.
 
 ### Ulashish rasmi
 
-Sana rasmga ataylab yozilmagan — sana o'zgarsa ham rasm eskirmaydi.
+Rasmda sana bor, vaqt yo'q (bitta rasm ikkala havolada chiqadi). Sana o'zgarsa qayta yasang.
 
 ```bash
 OG_FONTS=/papka/shriftlar python3 tools/make-og.py   # Marcellus, Jost, Cormorant TTF bo'lgan papka
@@ -57,10 +57,18 @@ OG_FONTS=/papka/shriftlar python3 tools/make-og.py   # Marcellus, Jost, Cormoran
 
 ## Mehmonga havola
 
+Ikki xil havola — har mehmon faqat o'z vaqtini ko'radi:
+
 ```
-https://islombek-taklifnoma.pages.dev/
-https://islombek-taklifnoma.pages.dev/?ism=Karimov%20oilasi    ← muhrda mehmon ismi chiqadi
+https://islombek-taklifnoma.pages.dev/            ← nahorgi osh (06:00), ikkala vaqt ham ko'rinadi
+https://islombek-taklifnoma.pages.dev/?ayollar    ← ayollar: faqat 11:00, sanoq va kalendar ham 11:00
 ```
+
+Muhrda mehmon ismi chiqishi uchun `ism` qo'shiladi: `/?ism=Karimov%20oilasi`,
+ayollarga: `/?ayollar&ism=Zulfiya%20opa`.
+
+> ⚠️ Telegram ulashish rasmini birinchi marta ochilganda keshlab oladi. Havolani tarqatishdan
+> **oldin** yakuniy versiyani deploy qiling, aks holda eski rasm/matn qolib ketadi.
 
 ## Joylash — Cloudflare Pages
 
