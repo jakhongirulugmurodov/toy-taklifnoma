@@ -3,10 +3,11 @@
 Mobil-birinchi onlayn taklifnoma. Mijoz talabi bilan: faqat kuyov ismi, mehrobda rasm o'rniga
 illyustratsiya, "Tadbir dasturi" va "Kelasizmi?" bo'limlari yo'q — backend ham yo'q, sof statik sayt.
 
-**Tadbir:** nahorgi osh (06:00) · ayollar uchun (11:00) · «E'zoza» tantanalar saroyi, Andijon.
+**Tadbir:** 31-oktabr 2026, shanba · nahorgi osh (06:00) · ayollar uchun (11:00) ·
+«E'zoza» tantanalar saroyi, Andijon.
 
-> ⚠️ **Sana va nahorgi osh vaqti hali tasdiqlanmagan.** `assets/config.js` dagi `date` va
-> `index.html` dagi `06:00` vaqtni mijozdan aniqlab, o'zgartiring.
+Nahorgi osh bomdoddan keyin bo'ladi, aniq vaqt belgilanmagan. Mijoz "bomdoddan keyin" deb
+yozilmasin, 06:00 qolsin dedi.
 
 ---
 

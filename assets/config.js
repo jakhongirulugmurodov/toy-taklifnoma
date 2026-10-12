@@ -13,9 +13,10 @@ window.TOY = {
   /* Tadbir boshlanishi — ISO, O'zbekiston vaqti (+05:00).
      Sanoq shu vaqtga sanaydi; sahifadagi barcha sana matnlari
      (muhr, hero, kalendar, footer) ham shundan avtomatik yoziladi.
-     ⚠️  SANA HALI TASDIQLANMAGAN — mijozdan aniq sana va osh vaqtini oling. */
-  date: '2026-11-15T06:00:00+05:00',
-  endDate: '2026-11-15T13:00:00+05:00',
+     Nahorgi osh bomdoddan keyin — aniq vaqt belgilanmagan, mijoz
+     06:00 ko'rinishini ma'qulladi. */
+  date: '2026-10-31T06:00:00+05:00',
+  endDate: '2026-10-31T13:00:00+05:00',
 
   /* Tadbir ma'lumotlari (kalendar fayli uchun) */
   title: "Islombekning nikoh to'yi — nahorgi osh",
