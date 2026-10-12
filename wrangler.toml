@@ -1,15 +1,8 @@
-name = "toy-taklifnoma"
+# Islombek taklifnomasi — alohida Cloudflare Pages loyihasi.
+# Sohibjon taklifnomasi (toy-taklifnoma) bilan aralashmasin: nom boshqa.
+name = "islombek-taklifnoma"
 compatibility_date = "2026-08-01"
 pages_build_output_dir = "."
 
-# D1 bazasi. database_id ni "wrangler d1 create toy" buyrug'i beradi —
-# chiqqan qiymatni shu yerga ko'chiring.
-[[d1_databases]]
-binding = "DB"
-database_name = "toy"
-database_id = "152aee60-3aae-49c4-a3a9-7d3ad9ecea22"
-
-# Maxfiy qiymatlar bu faylda EMAS. Ular alohida beriladi:
-#   wrangler pages secret put ADMIN_KEY   → admin panel paroli
-#   wrangler pages secret put TG_TOKEN    → Telegram bot tokeni
-#   wrangler pages secret put TG_CHAT     → xabar tushadigan chat ID
+# Backend (D1, Telegram, admin) bu taklifnomada yo'q — "Kelasizmi?" bo'limi
+# mijoz talabi bilan olib tashlangan. Faqat statik sayt.

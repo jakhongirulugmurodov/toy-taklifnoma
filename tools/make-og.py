@@ -13,13 +13,24 @@ GOLD = (201, 162, 75)
 GOLD_LT = (235, 214, 155)
 CREAM = (250, 244, 231)
 
+# Google Fonts fayllari bo'lsa (Marcellus, Jost, Cormorant) — sayt bilan bir xil shrift.
+#   OG_FONTS=/papka python3 tools/make-og.py
+FONTS = os.environ.get('OG_FONTS', '')
+
 SERIF = [
+    os.path.join(FONTS, 'Marcellus-Regular.ttf'),
     '/System/Library/Fonts/Supplemental/Didot.ttc',
     '/System/Library/Fonts/Supplemental/Baskerville.ttc',
     '/System/Library/Fonts/Supplemental/Georgia.ttf',
     '/System/Library/Fonts/Times.ttc',
 ]
+ITALIC = [
+    os.path.join(FONTS, 'CormorantGaramond-Italic[wght].ttf'),
+    '/System/Library/Fonts/Supplemental/Baskerville.ttc',
+    '/System/Library/Fonts/Supplemental/Georgia Italic.ttf',
+]
 SANS = [
+    os.path.join(FONTS, 'Jost[wght].ttf'),
     '/System/Library/Fonts/Supplemental/Futura.ttc',
     '/System/Library/Fonts/Helvetica.ttc',
     '/System/Library/Fonts/Supplemental/Arial.ttf',
@@ -86,25 +97,23 @@ for (ox, oy, sx, sy) in ((26, 26, 1, 1), (W - 27, 26, -1, 1), (26, H - 27, 1, -1
 
 # ── matn ──────────────────────────────────────────────
 f_eye = font(SANS, 22)
-f_name = font(SERIF, 104)
-f_amp = font(SERIF, 40)
-f_meta = font(SANS, 27)
-f_place = font(SANS, 22)
+f_name = font(SERIF, 136)
+f_sub = font(ITALIC, 44)
+f_place = font(SANS, 23)
 
-tracked(d, "NIKOH TO'YIGA TAKLIFNOMA", f_eye, 132, GOLD_LT, track=9)
-
-tracked(d, 'Sohibjon', f_name, 190, GOLD_LT, track=2)
-tracked(d, 'va', f_amp, 318, GOLD, track=2)
-tracked(d, 'Dilnozaxon', f_name, 372, GOLD_LT, track=2)
+# Sana bu rasmga yozilmaydi: u config.js da o'zgarsa rasm eskirib qolmasin
+tracked(d, "NIKOH TO'YI MUNOSABATI BILAN", f_eye, 140, GOLD_LT, track=9)
+tracked(d, 'Islombek', f_name, 196, GOLD_LT, track=3)
+tracked(d, 'nahorgi oshga taklif etamiz', f_sub, 368, GOLD, track=1)
 
 # ornament
-oy = 509
+oy = 462
 d.line([(W / 2 - 190, oy), (W / 2 - 46, oy)], fill=GOLD, width=2)
 d.line([(W / 2 + 46, oy), (W / 2 + 190, oy)], fill=GOLD, width=2)
 d.polygon([(W / 2, oy - 12), (W / 2 + 12, oy), (W / 2, oy + 12), (W / 2 - 12, oy)], outline=GOLD, width=2)
 
-tracked(d, '17 AVGUST 2026   ·   SOAT 19:00', f_meta, 526, CREAM, track=5)
-tracked(d, '«GRANT ASIA» RESTORANI  ·  ISHTIXON', f_place, 563, GOLD_LT, track=4)
+tracked(d, "«E'ZOZA» TANTANALAR SAROYI   ·   ANDIJON", f_place, 500, CREAM, track=5)
+tracked(d, 'SIZNI ASTOYDIL KUTAMIZ', f_place, 540, GOLD_LT, track=6)
 
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
 img.save(OUT, 'PNG', optimize=True)

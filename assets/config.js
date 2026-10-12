@@ -1,23 +1,27 @@
 /* ══════════════════════════════════════════════════
-   Sozlamalar — bu yagona tahrirlanadigan fayl
+   Sozlamalar — sana va tadbir ma'lumotlari shu yerda
    ══════════════════════════════════════════════════ */
 window.TOY = {
 
   /* Backend manzili.
-       ''                          → backend yo'q. Sayt ishlaydi, lekin javoblar
-                                     faqat mehmonning brauzerida qoladi.
-       '/'                         → sayt bilan bir xil domen (/api/rsvp)
+       ''                          → backend yo'q (bu taklifnomada javob
+                                     yig'ilmaydi — "Kelasizmi?" bo'limi yo'q)
+       '/'                         → sayt bilan bir xil domen (/api/…)
        'https://xxx.workers.dev'   → alohida server                          */
-  api: '/',
+  api: '',
 
-  /* To'y sanasi — ISO, O'zbekiston vaqti (+05:00) */
-  date: '2026-08-17T19:00:00+05:00',
-  endDate: '2026-08-17T23:00:00+05:00',
+  /* Tadbir boshlanishi — ISO, O'zbekiston vaqti (+05:00).
+     Sanoq shu vaqtga sanaydi; sahifadagi barcha sana matnlari
+     (muhr, hero, kalendar, footer) ham shundan avtomatik yoziladi.
+     ⚠️  SANA HALI TASDIQLANMAGAN — mijozdan aniq sana va osh vaqtini oling. */
+  date: '2026-11-15T06:00:00+05:00',
+  endDate: '2026-11-15T13:00:00+05:00',
 
   /* Tadbir ma'lumotlari (kalendar fayli uchun) */
-  title: "Sohibjon va Dilnozaxon — nikoh to'yi",
-  place: "«Grant Asia» restorani, Guliston ko'chasi 50A, Ishtixon, Samarqand viloyati",
+  title: "Islombekning nikoh to'yi — nahorgi osh",
+  note: "Nahorgi osh — soat 06:00 · Ayollar uchun — soat 11:00",
+  place: "«E'zoza» tantanalar saroyi, Andijon",
 
-  /* Xaritada ko'rsatiladigan nuqta */
-  mapQuery: "39.954992,66.490685"
+  /* Xaritada ko'rsatiladigan nuqta (Plus code PCW4+423, Andijon) */
+  mapQuery: "40.745263,72.405047"
 };

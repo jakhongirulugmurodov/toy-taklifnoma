@@ -8,6 +8,34 @@
   var $ = function (id) { return document.getElementById(id); };
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  /* ══════════ 0. SANA MATNLARI (config.js dan) ══════════
+     Sana faqat config.js da yoziladi — sahifadagi barcha matnlar shu yerdan
+     to'ldiriladi. HTML ichidagi matn faqat zaxira (skript yiqilsa). */
+  var MONTHS = ['yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun', 'iyul',
+    'avgust', 'sentabr', 'oktabr', 'noyabr', 'dekabr'];
+  var WEEKDAYS = ['yakshanba', 'dushanba', 'seshanba', 'chorshanba', 'payshanba', 'juma', 'shanba'];
+
+  /* Mehmon qaysi mintaqada bo'lmasin, sana O'zbekiston bo'yicha olinadi —
+     shuning uchun Date emas, ISO satrning o'zi bo'laklanadi */
+  var iso = String(CFG.date || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
+  var D = iso ? { y: +iso[1], m: +iso[2] - 1, d: +iso[3] } : null;
+
+  if (D) {
+    var two = function (n) { return (n < 10 ? '0' : '') + n; };
+    var wd = WEEKDAYS[new Date(Date.UTC(D.y, D.m, D.d)).getUTCDay()];
+    var cap = function (t) { return t.charAt(0).toUpperCase() + t.slice(1); };
+    var T = {
+      'date-long': D.d + '-' + MONTHS[D.m] + ', ' + D.y,
+      'date-dots': two(D.d) + '.' + two(D.m + 1) + '.' + D.y,
+      'day-week': D.d + '-' + MONTHS[D.m] + ', ' + wd,
+      'month-year': cap(MONTHS[D.m]) + ' ' + D.y
+    };
+    document.querySelectorAll('[data-t]').forEach(function (el) {
+      var v = T[el.getAttribute('data-t')];
+      if (v) el.textContent = v;
+    });
+  }
+
   /* ── Toast ─────────────────────────────────────── */
   var toastEl = $('toast'), toastTimer;
   function toast(msg) {
@@ -172,7 +200,7 @@
   }
 
   /* ══════════ 4. SANOQ (raqamlar pastdan aylanib chiqadi) ══════════ */
-  var target = new Date(CFG.date || '2026-08-17T19:00:00+05:00').getTime();
+  var target = new Date(CFG.date).getTime();
   var cdD = $('cdD'), cdH = $('cdH'), cdM = $('cdM'), cdS = $('cdS'), cdNote = $('cdNote');
   var pad = function (n) { return String(n).padStart(2, '0'); };
   var cdTimer;
@@ -210,8 +238,9 @@
   /* ══════════ 5. KALENDAR (dushanbadan) ══════════ */
   (function () {
     var grid = $('calGrid');
-    var d = new Date(target);
-    var year = d.getFullYear(), month = d.getMonth(), theDay = d.getDate();
+    if (!D) return;
+    var year = D.y, month = D.m, theDay = D.d;
+    grid.setAttribute('aria-label', year + '-yil ' + MONTHS[month] + ' oyi');
 
     ['Du', 'Se', 'Ch', 'Pa', 'Ju', 'Sh', 'Ya'].forEach(function (name) {
       var el = document.createElement('div');
@@ -221,8 +250,8 @@
     });
 
     // getDay(): 0=Yakshanba → dushanbadan boshlanadigan indeksga o'giramiz
-    var first = (new Date(year, month, 1).getDay() + 6) % 7;
-    var total = new Date(year, month + 1, 0).getDate();
+    var first = (new Date(Date.UTC(year, month, 1)).getUTCDay() + 6) % 7;
+    var total = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
 
     for (var i = 0; i < first; i++) {
       var gap = document.createElement('div');
@@ -251,14 +280,14 @@
       'DTEND:' + fmt(CFG.endDate || CFG.date),
       'SUMMARY:' + CFG.title,
       'LOCATION:' + CFG.place,
-      "DESCRIPTION:Nikoh to'yiga taklifnoma",
+      'DESCRIPTION:' + (CFG.note || "Nikoh to'yiga taklifnoma"),
       'BEGIN:VALARM', 'TRIGGER:-P1D', 'ACTION:DISPLAY', "DESCRIPTION:Ertaga to'y", 'END:VALARM',
       'END:VEVENT', 'END:VCALENDAR'
     ].join('\r\n');
 
     var url = URL.createObjectURL(new Blob([ics], { type: 'text/calendar;charset=utf-8' }));
     var a = document.createElement('a');
-    a.href = url; a.download = 'toy-17-avgust.ics';
+    a.href = url; a.download = D ? 'toy-' + D.d + '-' + MONTHS[D.m] + '.ics' : 'toy.ics';
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
     toast('Kalendar fayli yuklandi');
@@ -298,286 +327,6 @@
     } else { toast(text); }
   });
 
-  /* ══════════ 8. RASMLAR (bo'lmasa jimgina yashiriladi) ══════════ */
-  (function () {
-    /* Rasm keshdan darhol kelsa 'load' biz ulangunimizcha o'tib ketadi —
-       shuning uchun har doim avval .complete tekshiriladi */
-    function whenReady(img, ok, fail) {
-      if (img.complete) {
-        (img.naturalWidth > 0 ? ok : fail)();
-        return;
-      }
-      img.addEventListener('load', ok);
-      img.addEventListener('error', fail);
-    }
-
-    // Mehrob ramkasi — rasm bo'lmasa monogramma qoladi
-    var arch = $('couplePhoto');
-    whenReady(arch,
-      function () { arch.hidden = false; $('archMono').hidden = true; },
-      function () { arch.remove(); });
-
-    // Keng lenta — rasm bo'lmasa butun bo'lim ko'rinmaydi
-    var band = $('bandPhoto');
-    whenReady(band,
-      function () {
-        $('band').hidden = false;
-        if (!reduced) buildThread();
-      },
-      function () { $('band').remove(); });
-  })();
-
-  /* ══════════ 9. RSVP ══════════ */
-  var form = $('rsvpForm'), done = $('rsvpDone');
-  var nameEl = $('rsvpName'), errEl = $('rsvpErr');
-  var btnYes = $('btnYes'), btnNo = $('btnNo');
-  var STORE = 'toy-rsvp-v1';
-  var chosen = 'yes';
-
-  /* Har brauzerga bitta doimiy belgi — javob qayta yuborilsa yangisi
-     qo'shilmay, eskisi yangilanadi (bir xil ismli ikki mehmon aralashmaydi) */
-  function visitorId() {
-    var k = 'toy-vid', v;
-    try { v = localStorage.getItem(k); } catch (e) {}
-    if (!v) {
-      v = 'v' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
-      try { localStorage.setItem(k, v); } catch (e) {}
-    }
-    return v;
-  }
-
-  btnYes.addEventListener('click', function () { chosen = 'yes'; });
-  btnNo.addEventListener('click', function () { chosen = 'no'; });
-
-  function saveLocal(rec) {
-    try { localStorage.setItem(STORE, JSON.stringify(rec)); } catch (e) {}
-  }
-  function readLocal() {
-    try { return JSON.parse(localStorage.getItem(STORE) || 'null'); } catch (e) { return null; }
-  }
-
-  function showDone(rec, celebrate) {
-    form.hidden = true;
-    done.hidden = false;
-    var yes = rec.answer === 'yes';
-    var first = (rec.name || '').split(' ')[0];
-    $('doneTitle').textContent = first ? 'Rahmat, ' + first + '!' : 'Rahmat!';
-    $('doneText').innerHTML = yes
-      ? 'Tashrifingiz biz uchun katta baxt.<br>Ko\'rishguncha ❤'
-      : 'Duolaringiz biz uchun yetarli.<br>Rahmat sizga ❤';
-    $('rcAnswer').textContent = yes ? 'Kelamiz' : 'Kela olmaymiz';
-    $('rcName').textContent = rec.name || '—';
-    syncWishUI(rec);
-    if (celebrate) buzz(yes ? [12, 50, 16] : 10);
-    if (yes && celebrate) goldDust();
-  }
-
-  $('rsvpEdit').addEventListener('click', function () {
-    done.hidden = true;
-    form.hidden = false;
-    nameEl.focus();
-  });
-
-  form.addEventListener('submit', function (ev) {
-    ev.preventDefault();
-    errEl.hidden = true;
-
-    var name = nameEl.value.trim().replace(/\s+/g, ' ');
-    var field = nameEl.closest('.field');
-
-    if (name.length < 2) {
-      field.classList.add('has-err');
-      $('nameErr').hidden = false;
-      nameEl.focus();
-      return;
-    }
-    field.classList.remove('has-err');
-    $('nameErr').hidden = true;
-
-    var rec = {
-      vid: visitorId(),
-      name: name,
-      answer: chosen,
-      at: new Date().toISOString(),
-      website: $('hp').value            // asalarixona — bot to'ldirsa serverda tashlanadi
-    };
-
-    btnYes.disabled = btnNo.disabled = true;
-    send(rec).then(function () {
-      saveLocal(rec);
-      showDone(rec, true);
-    }).catch(function () {
-      if (navigator.onLine === false) {
-        // Internet yo'q — javobni navbatga qo'yamiz, ulanganda o'zi yuboriladi
-        saveLocal(rec);
-        queue(rec);
-        showDone(rec, true);
-        return;
-      }
-      // Server javob bermadi. Mehmonga soxta "qabul qilindi" ko'rsatmaymiz.
-      errEl.textContent = "Javob yuborilmadi. Iltimos, birozdan keyin qayta urinib ko'ring.";
-      errEl.hidden = false;
-    }).then(function () {
-      btnYes.disabled = btnNo.disabled = false;
-    });
-  });
-
-  function endpoint() {
-    var base = CFG.api;
-    if (!base) return null;                       // backend ulanmagan
-    if (base === '/') return '/api/rsvp';         // bir xil domen
-    return base.replace(/\/+$/, '') + '/api/rsvp';
-  }
-
-  function send(rec) {
-    var url = endpoint();
-    if (!url) return Promise.resolve();           // faqat brauzerda saqlanadi
-    return fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(rec)
-    }).then(function (r) {
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      return r.json().catch(function () { return {}; });
-    });
-  }
-
-  /* Internet uzilgan bo'lsa — qayta urinamiz */
-  function queue(rec) {
-    if (!endpoint()) return;
-    try { localStorage.setItem(STORE + '-pending', JSON.stringify(rec)); } catch (e) {}
-  }
-  function flush() {
-    if (!endpoint()) return;
-    var raw;
-    try { raw = localStorage.getItem(STORE + '-pending'); } catch (e) { return; }
-    if (!raw) return;
-    send(JSON.parse(raw)).then(function () {
-      try { localStorage.removeItem(STORE + '-pending'); } catch (e) {}
-    }).catch(function () {});
-  }
-  window.addEventListener('online', flush);
-  flush();
-
-  /* Ilgari javob bergan bo'lsa — darhol tasdiq ekrani */
-  var prev = readLocal();
-  if (prev && prev.answer) {
-    showDone(prev, false);
-    nameEl.value = prev.name || '';
-    chosen = prev.answer;
-  }
-
-  /* ══════════ MAKTUBLAR — tilaklarni to'liq o'qish ══════════ */
-  var UZ_OY = ['yanvar','fevral','mart','aprel','may','iyun',
-               'iyul','avgust','sentabr','oktabr','noyabr','dekabr'];
-
-  var lettersEl = $('letters'), letterCard = $('letterCard');
-  var lIdx = 0, lOpen = false;
-
-  function lDate(raw) {
-    if (!raw) return '';
-    // D1 "2026-08-09 05:12:33" beradi — Safari uni o'zi tushunmaydi
-    var d = new Date(String(raw).replace(' ', 'T') + (String(raw).indexOf('Z') < 0 ? 'Z' : ''));
-    if (isNaN(d)) return '';
-    return d.getDate() + '-' + UZ_OY[d.getMonth()] + ' ' + d.getFullYear();
-  }
-
-  function lRender(dir) {
-    var w = ribbonItems[lIdx];
-    if (!w) return;
-    var paint = function () {
-      $('letterBody').textContent = w.wish || '';
-      $('letterName').textContent = w.name || '—';
-      $('letterDate').textContent = lDate(w.at);
-      $('letterCount').textContent = (lIdx + 1) + ' / ' + ribbonItems.length;
-      $('letterPrev').disabled = lIdx === 0;
-      $('letterNext').disabled = lIdx === ribbonItems.length - 1;
-    };
-
-    if (!dir || reduced) { paint(); return; }
-    // Eski maktub chetga chiqadi, yangisi qarama-qarshi tomondan keladi
-    letterCard.classList.add(dir > 0 ? 'is-out-l' : 'is-out-r');
-    setTimeout(function () {
-      paint();
-      letterCard.classList.remove('is-out-l', 'is-out-r');
-      letterCard.classList.add(dir > 0 ? 'is-out-r' : 'is-out-l');
-      void letterCard.offsetWidth;
-      letterCard.classList.remove('is-out-l', 'is-out-r');
-    }, 300);
-  }
-
-  function lGo(step) {
-    var next = lIdx + step;
-    if (next < 0 || next >= ribbonItems.length) return;
-    lIdx = next;
-    lRender(step);
-    var hint = $('lettersHint');
-    if (hint) hint.style.opacity = '0';
-  }
-
-  function lOpenAt(i) {
-    if (!ribbonItems.length) return;
-    lIdx = Math.max(0, Math.min(ribbonItems.length - 1, i || 0));
-    lettersEl.hidden = false;
-    document.body.classList.add('is-locked');
-    lOpen = true;
-    lRender(0);
-    void lettersEl.offsetWidth;        // reflow — o'tish shu yerdan boshlanadi
-    lettersEl.classList.add('is-on');  // (rAF ishlatilmaydi: fon sahifada u o'lik)
-  }
-
-  function lClose() {
-    lettersEl.classList.remove('is-on');
-    lOpen = false;
-    document.body.classList.remove('is-locked');
-    setTimeout(function () { lettersEl.hidden = true; }, reduced ? 0 : 380);
-  }
-
-  $('wishAll').addEventListener('click', function () { lOpenAt(0); });
-  $('lettersX').addEventListener('click', lClose);
-  $('letterPrev').addEventListener('click', function () { lGo(-1); });
-  $('letterNext').addEventListener('click', function () { lGo(1); });
-
-  document.addEventListener('keydown', function (e) {
-    if (!lOpen) return;
-    if (e.key === 'Escape') lClose();
-    else if (e.key === 'ArrowLeft') lGo(-1);
-    else if (e.key === 'ArrowRight') lGo(1);
-  });
-
-  /* Surish — maktubni varaqlash */
-  (function () {
-    var x0 = null, y0 = null;
-    lettersEl.addEventListener('touchstart', function (e) {
-      x0 = e.touches[0].clientX; y0 = e.touches[0].clientY;
-    }, { passive: true });
-    lettersEl.addEventListener('touchend', function (e) {
-      if (x0 === null) return;
-      var dx = e.changedTouches[0].clientX - x0;
-      var dy = e.changedTouches[0].clientY - y0;
-      x0 = null;
-      // Tik harakat bo'lsa — bu matnni siljitish, varaqlamaymiz
-      if (Math.abs(dx) < 45 || Math.abs(dx) < Math.abs(dy)) return;
-      lGo(dx < 0 ? 1 : -1);
-    }, { passive: true });
-  })();
-
-  /* Lentadagi kartaga bosilsa — o'sha tilak maktub bo'lib ochiladi */
-  ['rib1', 'rib2'].forEach(function (id) {
-    var row = $(id);
-    if (!row) return;
-    row.addEventListener('click', function (e) {
-      var card = e.target.closest && e.target.closest('.wishcard');
-      if (!card) return;
-      var nm = card.querySelector('b');
-      var key = nm ? nm.textContent : '';
-      for (var i = 0; i < ribbonItems.length; i++) {
-        if (ribbonItems[i].name === key) { lOpenAt(i); return; }
-      }
-      lOpenAt(0);
-    });
-  });
-
   /* ══════════ 10. OLTIN CHANG ══════════ */
   function dust(cx, cy, n, spread, fall) {
     if (reduced || !document.body.animate) return;
@@ -601,10 +350,6 @@
         .onfinish = (function (node) { return function () { node.remove(); }; })(p);
     }
   }
-  function goldDust() {
-    var rect = done.getBoundingClientRect();
-    dust(rect.left + rect.width / 2, rect.top + 60, 26, 70, 130);
-  }
 
   /* ══════════ 11. GIRIH PARALLAKSI + OLTIN IP ══════════ */
   var threadPath = null, threadRect = null, threadLen = 0;
@@ -618,7 +363,7 @@
     var W = main.clientWidth, H = main.scrollHeight;
     var hero = $('hero');
     var startY = hero.offsetTop + hero.offsetHeight - 30;
-    var secs = ['taklif', 'sanoq', 'kalendar', 'manzil', 'dastur', 'band', 'wishes', 'rsvp']
+    var secs = ['taklif', 'sanoq', 'kalendar', 'manzil']
       .map(function (id) { return $(id); })
       .filter(function (el) { return el && !el.hidden; });
 
@@ -778,14 +523,14 @@
     }
   })();
 
-  /* ══════════ 13. GIROSKOP — mehrob rasmi yengil suriladi ══════════ */
+  /* ══════════ 13. GIROSKOP — mehrob illyustratsiyasi yengil suriladi ══════════ */
   var gyroBase = null;
   function onTilt(ev) {
     if (ev.beta == null || ev.gamma == null) return;
     if (gyroBase === null) gyroBase = { b: ev.beta, g: ev.gamma };
     var dx = Math.max(-9, Math.min(9, (ev.gamma - gyroBase.g) * 0.45));
     var dy = Math.max(-9, Math.min(9, (ev.beta - gyroBase.b) * 0.45));
-    var img = $('couplePhoto');
+    var img = $('archArt');
     if (!img) return;
     img.style.setProperty('--px', dx.toFixed(1) + 'px');
     img.style.setProperty('--py', dy.toFixed(1) + 'px');
@@ -805,8 +550,8 @@
   // Kompyuterda — sichqoncha bilan xuddi shu effekt
   if (!reduced && window.matchMedia('(hover:hover)').matches) {
     document.addEventListener('mousemove', function (ev) {
-      var img = $('couplePhoto');
-      if (!img || img.hidden) return;
+      var img = $('archArt');
+      if (!img) return;
       var dx = ((ev.clientX / window.innerWidth) - 0.5) * 14;
       var dy = ((ev.clientY / window.innerHeight) - 0.5) * 14;
       img.style.setProperty('--px', dx.toFixed(1) + 'px');
@@ -814,182 +559,4 @@
     }, { passive: true });
   }
 
-  /* ══════════ 14. TILAKLAR ══════════ */
-  var wishBox = $('wishBox'), wishText = $('wishText'), wishSend = $('wishSend');
-  var wishDone = $('wishDone'), wishCount = $('wishCount');
-
-  function wishUrl(path) {
-    var base = CFG.api;
-    if (!base) return null;
-    if (base === '/') return '/api/' + path;
-    return base.replace(/\/+$/, '') + '/api/' + path;
-  }
-
-  function esc(s) {
-    return String(s == null ? '' : s)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  }
-
-  function syncWishUI(rec) {
-    if (!wishBox || !wishUrl('wish')) return;
-    if (rec && rec.wish) {
-      wishBox.hidden = true;
-      wishDone.hidden = false;
-    } else {
-      wishBox.hidden = false;
-      wishDone.hidden = true;
-    }
-  }
-
-  if (wishText) {
-    wishText.addEventListener('input', function () {
-      wishCount.textContent = wishText.value.length + ' / 200';
-    });
-  }
-
-  if (wishSend) {
-    wishSend.addEventListener('click', function () {
-      var w = wishText.value.trim().replace(/[ \t]+/g, ' ');
-      if (w.length < 3) { wishText.focus(); return; }
-      wishSend.disabled = true;
-
-      fetch(wishUrl('wish'), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ vid: visitorId(), wish: w.slice(0, 200) })
-      }).then(function (r) {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        var rec = readLocal() || {};
-        rec.wish = w;
-        saveLocal(rec);
-        syncWishUI(rec);
-        buzz([10, 40, 12]);
-        addWishCard({ name: rec.name || '', wish: w }, true);
-      }).catch(function () {
-        toast("Tilak yuborilmadi — birozdan keyin urinib ko'ring");
-      }).then(function () { wishSend.disabled = false; });
-    });
-  }
-
-  /* ── Tilaklar lentasi ── */
-  var ribbonItems = [];
-  function addWishCard(item, prepend) {
-    if (prepend) ribbonItems.unshift(item); else ribbonItems.push(item);
-    renderRibbon();
-  }
-  function card(w) {
-    return '<div class="wishcard"><b>' + esc(w.name) + '</b><p>' + esc(w.wish) + '</p></div>';
-  }
-
-  /* Qatorni to'ldiradi. Halqa aylanishi uchun kamida 2 nusxa,
-     va kontent ekrandan 2 barobar keng bo'lishi kerak. */
-  function fillRow(rowEl, trackEl, items) {
-    if (!items.length) { rowEl.hidden = true; return; }
-    rowEl.hidden = false;
-    var one = items.map(card).join('');
-    var html = one, copies = 1;
-    trackEl.innerHTML = html;
-    var need = (window.innerWidth || 360) * 2;
-    while ((copies < 2 || (trackEl.scrollWidth && trackEl.scrollWidth < need)) && copies < 8) {
-      html += one; copies++;
-      trackEl.innerHTML = html;
-    }
-    rowEl.dataset.copies = copies;
-    rowEl.dataset.unit = trackEl.scrollWidth
-      ? Math.round(trackEl.scrollWidth / copies) : 0;
-  }
-
-  function renderRibbon() {
-    var sec = $('wishes');
-    if (!sec || !ribbonItems.length) return;
-
-    // Avval ko'rsatamiz — yashirin holatda o'lchamlar 0 chiqadi
-    var first = sec.hidden;
-    if (first) sec.hidden = false;
-
-    // 5 tagacha — bitta qator; ko'p bo'lsa juft/toq bo'lib ikki qatorga
-    var a = [], b = [];
-    if (ribbonItems.length <= 5) { a = ribbonItems.slice(); }
-    else {
-      ribbonItems.forEach(function (w, i) { (i % 2 ? b : a).push(w); });
-    }
-    fillRow($('rib1'), $('ribTrack1'), a);
-    fillRow($('rib2'), $('ribTrack2'), b);
-
-    var cnt = $('wishAllN');
-    if (cnt) cnt.textContent = '· ' + ribbonItems.length;
-
-    if (first) {
-      if (io) { sec.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); }); }
-      if (!reduced) buildThread();
-      startDrift();
-    }
-  }
-
-  /* ── Uzluksiz oqim + qo'l bilan surish ──
-     Qator — haqiqiy scroll konteyner. Oqim HECH QACHON to'xtamaydi;
-     mehmon barmog'i bilan sursa, oqim shu yangi joydan davom etaveradi —
-     ya'ni tezlik yetarli bo'lmasa qo'l bilan oldinga o'tib ketish mumkin.
-
-     Taymer (rAF emas): sur'at vaqtga bog'liq, shuning uchun kadr chastotasi
-     tushsa ham bir xil qoladi; fonda brauzer taymerni o'zi siyraklashtiradi. */
-  var driftOn = false;
-  var SPEED = 27;            // piksel / soniya
-  function startDrift() {
-    if (driftOn || reduced) return;
-    driftOn = true;
-
-    var rows = [
-      { el: $('rib1'), dir: 1, inited: false },
-      { el: $('rib2'), dir: -1, inited: false }
-    ];
-
-    /* Ko'rinmayotgan bo'limda bekorga ishlamaymiz.
-       IntersectionObserver emas, to'g'ridan-to'g'ri o'lchov: IO sahifa
-       fonda bo'lganda qayta hisoblamaydi va "ko'rinmayapti"da qotib qoladi. */
-    var sec = $('wishes');
-    function onScreen() {
-      var r = sec.getBoundingClientRect();
-      return r.bottom > -120 && r.top < (window.innerHeight || 0) + 120;
-    }
-
-    var last = Date.now();
-    setInterval(function () {
-      var now = Date.now();
-      // Fonda taymer siyraklashsa — sakramasin deb qadamni cheklaymiz
-      var dt = Math.min(100, now - last);
-      last = now;
-      if (!onScreen()) return;
-
-      var step = SPEED * dt / 1000;
-      rows.forEach(function (r) {
-        if (!r.el || r.el.hidden) return;
-        // O'lcham har qadamda jonli hisoblanadi — shrift kelishi, resize,
-        // panel holati o'zgarishi hech narsani buzmaydi
-        var copies = parseInt(r.el.dataset.copies, 10) || 1;
-        var unit = Math.round(r.el.scrollWidth / copies);
-        if (!unit || r.el.scrollWidth <= r.el.clientWidth + 4) return;
-        if (!r.inited) {
-          r.inited = true;
-          if (r.dir < 0) r.el.scrollLeft = unit;   // teskari qator o'z uchidan boshlaydi
-        }
-        var x = r.el.scrollLeft + r.dir * step;
-        // Halqa: kontent har "unit"da takrorlanadi — sakrash sezilmaydi
-        if (x >= unit) x -= unit; else if (x <= 0) x += unit;
-        r.el.scrollLeft = x;
-      });
-    }, 30);
-  }
-
-  // Qaytgan mehmon: tilak maydoni/rahmat holatini tiklaymiz
-  if (prev && prev.answer) syncWishUI(prev);
-
-  (function loadWishes() {
-    var url = wishUrl('wishes');
-    if (!url) return;
-    fetch(url).then(function (r) { return r.json(); }).then(function (d) {
-      var items = (d.items || []).filter(function (w) { return w && w.wish; });
-      if (items.length) { ribbonItems = items; renderRibbon(); }
-    }).catch(function () {});
-  })();
 })();
