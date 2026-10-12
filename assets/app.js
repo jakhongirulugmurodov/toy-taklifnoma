@@ -296,6 +296,7 @@
   /* ══════════ 7. XARITA (kerak bo'lganda yuklanadi) ══════════ */
   (function () {
     var box = $('map'), loaded = false;
+    if (!box) return;
     function load() {
       if (loaded) return;
       loaded = true;
