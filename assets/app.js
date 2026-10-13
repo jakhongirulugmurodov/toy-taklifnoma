@@ -368,10 +368,9 @@
     if (old) old.remove();
 
     var W = main.clientWidth, H = main.scrollHeight;
-    // Ip birinchi bo'lim (taklif) ichidan boshlanadi — hero yo'q
-    var first = $('taklif');
-    var startY = first.offsetTop + 30;
-    var secs = ['taklif', 'manzil', 'sanoq', 'kalendar']
+    var hero = $('hero');
+    var startY = hero.offsetTop + hero.offsetHeight - 30;
+    var secs = ['taklif', 'sanoq', 'kalendar', 'manzil']
       .map(function (id) { return $(id); })
       .filter(function (el) { return el && !el.hidden; });
 
@@ -518,7 +517,6 @@
   (function () {
     if (reduced) return;
     var hero = $('hero');
-    if (!hero) return;
     for (var i = 0; i < 12; i++) {
       var s = document.createElement('i');
       s.className = 'spark';

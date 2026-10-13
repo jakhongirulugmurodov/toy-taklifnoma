@@ -360,19 +360,6 @@ html.no-js .hero .ornament,html.no-js .hero__meta,html.no-js .hero__times,html.n
 
 .card__name{font-weight:600;color:var(--teal-700)}
 
-/* Birinchi ekran endi taklif matni — bismillah shu yerga ko'chdi */
-.bismillah--paper{color:var(--gold-dk);text-align:center;font-size:clamp(1.5rem,6vw,2.3rem);margin-bottom:22px}
-
-/* ══════════ QACHON (manzil bo'limi ichida) ══════════ */
-.when{max-width:340px;margin:0 auto 24px}
-.when__date{font-family:'Marcellus',serif;font-size:1.25rem;color:var(--teal-800)}
-.when__grid{display:flex;margin-top:12px;background:var(--cream);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-sm)}
-.when__grid > div{flex:1;padding:12px 8px}
-.when__grid > div + div{border-left:1px solid var(--line)}
-.when__grid dt{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-dk)}
-.when__grid dd{font-family:'Marcellus',serif;font-size:1.5rem;color:var(--teal-700);margin-top:2px;font-variant-numeric:tabular-nums}
-.when__grid dd.when__text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.3rem;line-height:1.55}
-
 .arch__mono{
   position:relative;font-family:'Marcellus',serif;font-size:2.9rem;letter-spacing:.02em;
 }

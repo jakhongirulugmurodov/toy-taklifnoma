@@ -1,10 +1,7 @@
 # Islombek — nikoh to'yi taklifnomasi
 
-Mobil-birinchi onlayn taklifnoma, sof statik sayt (backend yo'q). Mijoz talabi bilan: faqat kuyov
-ismi, mehrobda nikoh uzuklari illyustratsiyasi; "Tadbir dasturi", "Kelasizmi?" va tilaklar yo'q.
-
-**Tartib:** muhr → taklif matni (birinchi ekran, musiqa shu yerda boshlanadi) → manzil, sana va
-vaqtlar → sanoq → kalendar. Sana/joy birinchi ekranda yo'q — mehmon pastga tushishi uchun.
+Mobil-birinchi onlayn taklifnoma. Mijoz talabi bilan: faqat kuyov ismi, mehrobda rasm o'rniga
+illyustratsiya (nikoh uzuklari), "Tadbir dasturi", "Kelasizmi?" va tilaklar yo'q — sof statik sayt.
 
 **Tadbir:** 31-oktabr 2026, shanba · erkaklar uchun nahorgi osh · ayollar uchun 11:00 ·
 «E'zoza» tantanalar saroyi, Andijon.
@@ -34,7 +31,7 @@ tools/make-og.py      ulashish rasmini qayta yasash
 | `config.js` → `date`, `endDate` | Tadbir vaqti (`+05:00`). Muhr, hero, kalendar, footer dagi **barcha sana matnlari shundan avtomatik** yoziladi, sanoq ham shunga sanaydi |
 | `config.js` → `title`, `note`, `place` | Kalendar fayli (.ics) uchun matn |
 | `config.js` → `mapQuery` | Xaritadagi nuqta (koordinata) |
-| `index.html` → `.when` | Sana, nahorgi osh va ayollar vaqti (manzil bo'limida) |
+| `index.html` → `.hero__times` | Nahorgi osh va ayollar vaqti |
 | `index.html` → `.card__body` | Taklif matni (mijoz bergan matn) |
 | `index.html` → `.foot__family` | Imzo ("Kamoli ehtirom ila, …") |
 

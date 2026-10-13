@@ -26,7 +26,7 @@
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa&family=Marcellus&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500&family=Caveat:wght@400;600&display=swap"
       onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa&family=Marcellus&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500&family=Caveat:wght@400;600&display=swap"></noscript>
-<link rel="stylesheet" href="assets/style.css?v=25">
+<link rel="stylesheet" href="assets/style.css?v=26">
 <script>document.documentElement.classList.remove('no-js');</script>
 </head>
 <body>
@@ -49,7 +49,7 @@
     <p class="seal__hint">Muhrni bosing<i class="seal__line" aria-hidden="true"></i></p>
     <p class="seal__music" hidden>Musiqa bilan ochiladi — xohlasangiz o'chirasiz</p>
   </div>
-  <p class="seal__foot">ISLOMBEK &nbsp;·&nbsp; ANDIJON</p>
+  <p class="seal__foot"><span data-t="date-dots">31.10.2026</span> &nbsp;·&nbsp; ANDIJON</p>
 </div>
 
 <!-- ═══════════ Musiqa ═══════════ -->
@@ -63,12 +63,34 @@
 
 <main id="main">
 
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero" id="hero">
+  <div class="girih girih--dark" aria-hidden="true"></div>
+  <div class="hero__frame" aria-hidden="true"></div>
+  <span class="corner corner--tl" aria-hidden="true"></span>
+  <span class="corner corner--tr" aria-hidden="true"></span>
+  <span class="corner corner--bl" aria-hidden="true"></span>
+  <span class="corner corner--br" aria-hidden="true"></span>
+
+  <div class="hero__inner">
+    <p class="bismillah" lang="ar" dir="rtl">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+    <p class="eyebrow eyebrow--light hero__eyebrow">Nikoh to'yi munosabati bilan</p>
+    <h1 class="hero__names hero__names--solo"><span class="foil">Islombek</span><em>baxtli kunimizga taklif etamiz</em></h1>
+    <span class="ornament" aria-hidden="true"></span>
+    <p class="hero__meta"><span data-t="date-long">31-oktabr, 2026</span><em>«E'zoza» tantanalar saroyi · Andijon</em></p>
+    <dl class="hero__times">
+      <div><dt>Erkaklar uchun</dt><dd class="hero__time-text">Nahorgi oshga</dd></div>
+      <div><dt>Ayollar uchun</dt><dd>11:00</dd></div>
+    </dl>
+  </div>
+
+  <a class="scroll-cue" href="#taklif"><span>Pastga tushing</span><i aria-hidden="true"></i></a>
+</section>
+
 <!-- ═══════════ TAKLIF MATNI ═══════════ -->
 <section id="taklif" class="pad">
   <div class="girih" aria-hidden="true"></div>
   <div class="wrap">
-
-    <p class="bismillah bismillah--paper" lang="ar" dir="rtl">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
 
     <figure class="arch reveal">
       <div class="arch__inner">
@@ -186,40 +208,6 @@
   </div>
 </section>
 
-<!-- ═══════════ MANZIL ═══════════ -->
-<section class="pad tint" id="manzil">
-  <div class="girih" aria-hidden="true"></div>
-  <div class="wrap">
-    <header class="head reveal">
-      <p class="eyebrow">Manzil va vaqt</p>
-      <h2>Qayerda kutamiz</h2>
-    </header>
-
-    <div class="venue reveal">
-      <p class="venue__name">«E'zoza» tantanalar saroyi</p>
-      <p class="venue__addr" id="venueAddr">Andijon shahri</p>
-
-      <div class="when">
-        <p class="when__date"><span data-t="day-week">31-oktabr, shanba</span></p>
-        <dl class="when__grid">
-          <div><dt>Erkaklar uchun</dt><dd class="when__text">Nahorgi oshga</dd></div>
-          <div><dt>Ayollar uchun</dt><dd>11:00</dd></div>
-        </dl>
-      </div>
-
-      <div class="map" id="map">
-        <div class="map__skeleton" aria-hidden="true"></div>
-      </div>
-
-      <div class="venue__nav">
-        <a class="btn btn--solid" href="https://maps.app.goo.gl/MLzNStUR77SMbyM88" target="_blank" rel="noopener">Google Maps</a>
-        <a class="btn btn--ghost" href="https://yandex.uz/maps/?pt=72.405047,40.745263&amp;z=17&amp;l=map" target="_blank" rel="noopener">Yandex</a>
-        <button class="btn btn--ghost" id="copyAddr" type="button">Manzildan nusxa</button>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ═══════════ SANOQ ═══════════ -->
 <section class="pad dark" id="sanoq">
   <div class="girih girih--dark" aria-hidden="true"></div>
@@ -256,6 +244,32 @@
   </div>
 </section>
 
+<!-- ═══════════ MANZIL ═══════════ -->
+<section class="pad tint" id="manzil">
+  <div class="girih" aria-hidden="true"></div>
+  <div class="wrap">
+    <header class="head reveal">
+      <p class="eyebrow">Manzil</p>
+      <h2>Qayerda kutamiz</h2>
+    </header>
+
+    <div class="venue reveal">
+      <p class="venue__name">«E'zoza» tantanalar saroyi</p>
+      <p class="venue__addr" id="venueAddr">Andijon shahri</p>
+
+      <div class="map" id="map">
+        <div class="map__skeleton" aria-hidden="true"></div>
+      </div>
+
+      <div class="venue__nav">
+        <a class="btn btn--solid" href="https://maps.app.goo.gl/MLzNStUR77SMbyM88" target="_blank" rel="noopener">Google Maps</a>
+        <a class="btn btn--ghost" href="https://yandex.uz/maps/?pt=72.405047,40.745263&amp;z=17&amp;l=map" target="_blank" rel="noopener">Yandex</a>
+        <button class="btn btn--ghost" id="copyAddr" type="button">Manzildan nusxa</button>
+      </div>
+    </div>
+  </div>
+</section>
+
 </main>
 
 <footer class="foot">
@@ -269,7 +283,7 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="assets/config.js"></script>
-<script src="assets/app.js?v=25"></script>
+<script src="assets/app.js?v=26"></script>
 <script>
 /* Zaxira: skript yiqilgan bo'lsa ham mehmon taklifnomani ko'raveradi */
 if (!window.__toyReady) {
