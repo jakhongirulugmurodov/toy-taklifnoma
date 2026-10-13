@@ -1,0 +1,161 @@
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa&family=Marcellus&family=Cormorant+Garamond:ital,wght@0,400;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#10262A;
+  --teal-900:#062A2B;
+  --teal-800:#0A3A38;
+  --teal-700:#0E5C57;
+  --teal-600:#17756D;
+
+  --gold:#C9A24B;
+  --gold-lt:#EBD69B;
+  --gold-dk:#7A5F1F;
+
+  --cream:#FAF4E7;
+  --cream-2:#F2E6CC;
+  --paper:#FCF8EF;
+
+  --line:rgba(201,162,75,.32);
+  --line-lt:rgba(201,162,75,.45);
+
+  --foil:linear-gradient(135deg,#8A6C28 0%,#E7CE8F 26%,#C9A24B 48%,#F5E7BC 68%,#9C7D33 100%);
+  --shadow:0 18px 48px rgba(6,42,43,.16);
+  --shadow-sm:0 6px 18px rgba(6,42,43,.10);
+
+  /* Yagona harakat tili — hamma animatsiya shu egri chiziqda yuradi */
+  --ease:cubic-bezier(.22,1,.36,1);
+
+  --girih-gold:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23C9A24B' stroke-width='.8'%3E%3Crect x='13' y='13' width='38' height='38'/%3E%3Cpath d='M32 6 58 32 32 58 6 32Z'/%3E%3Ccircle cx='32' cy='32' r='6.5'/%3E%3Cpath d='M0 0 13 13M64 0 51 13M0 64 13 51M64 64 51 51'/%3E%3C/g%3E%3C/svg%3E");
+  --girih-lt:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23EBD69B' stroke-width='.8'%3E%3Crect x='13' y='13' width='38' height='38'/%3E%3Cpath d='M32 6 58 32 32 58 6 32Z'/%3E%3Ccircle cx='32' cy='32' r='6.5'/%3E%3Cpath d='M0 0 13 13M64 0 51 13M0 64 13 51M64 64 51 51'/%3E%3C/g%3E%3C/svg%3E");
+
+  --corner:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 44'%3E%3Cg fill='none' stroke='%23C9A24B' stroke-width='1.2'%3E%3Cpath d='M2 32V2h30'/%3E%3Cpath d='M2 14 14 2'/%3E%3C/g%3E%3Ccircle cx='2' cy='2' r='2.6' fill='%23C9A24B'/%3E%3C/svg%3E");
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1350px}
+body{position:relative;overflow:hidden;color:var(--cream);font-family:'Jost',sans-serif;text-align:center;
+  background:radial-gradient(120% 80% at 50% 12%,var(--teal-600) 0%,var(--teal-700) 42%,var(--teal-900) 100%)}
+.girih{position:absolute;inset:0;background:var(--girih-lt);background-size:96px;opacity:.10}
+.frame{position:absolute;inset:34px;border:2px solid rgba(201,162,75,.5);border-radius:26px}
+.frame2{position:absolute;inset:50px;border:1px solid rgba(201,162,75,.25);border-radius:18px}
+.c{position:absolute;width:78px;height:78px;background:no-repeat center/contain var(--corner)}
+.tl{top:46px;left:46px}.tr{top:46px;right:46px;transform:scaleX(-1)}.bl{bottom:46px;left:46px;transform:scaleY(-1)}.br{bottom:46px;right:46px;transform:scale(-1,-1)}
+.in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:90px}
+.bism{font-family:'Aref Ruqaa',serif;font-size:56px;color:var(--gold-lt);line-height:1.6}
+.eye{margin-top:14px;font-size:22px;letter-spacing:.34em;text-transform:uppercase;color:var(--gold-lt)}
+.arch{width:300px;margin:38px 0 30px}
+.arch__inner{position:relative;aspect-ratio:4/5;border-radius:50% 50% 16px 16px/38% 38% 16px 16px;overflow:hidden;
+  box-shadow:0 0 0 2px var(--gold),0 0 0 12px rgba(6,42,43,.6),0 0 0 13px rgba(201,162,75,.45),0 24px 50px rgba(0,0,0,.35)}
+.arch svg{position:absolute;inset:-4%;width:108%;height:108%}
+.name{font-family:'Marcellus',serif;font-size:132px;line-height:1;background:var(--foil);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:40px;color:var(--gold);margin-top:14px}
+.orn{display:flex;align-items:center;gap:18px;margin:30px 0 26px}
+.orn i{width:150px;height:2px;background:var(--gold)}
+.orn b{width:20px;height:20px;border:2px solid var(--gold);transform:rotate(45deg)}
+.date{font-size:40px;letter-spacing:.04em}
+.venue{margin-top:12px;font-size:22px;letter-spacing:.2em;text-transform:uppercase;color:rgba(250,244,231,.85)}
+.times{display:flex;margin-top:34px;border:2px solid rgba(201,162,75,.45);border-radius:18px;background:rgba(6,42,43,.3)}
+.times div{padding:18px 44px}.times div+div{border-left:2px solid rgba(201,162,75,.35)}
+.times span{display:block;font-size:18px;letter-spacing:.24em;text-transform:uppercase;color:rgba(250,244,231,.8)}
+.times strong{display:block;font-family:'Marcellus',serif;font-weight:400;font-size:52px;color:var(--gold-lt);margin-top:4px}
+</style></head><body>
+<div class="girih"></div><div class="frame"></div><div class="frame2"></div>
+<span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span>
+<div class="in">
+  <p class="bism" dir="rtl">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+  <p class="eye">Nikoh to'yiga taklifnoma</p>
+  <div class="arch"><div class="arch__inner"><svg class="arch__art" id="archArt" viewBox="0 0 200 250" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+          <defs>
+            <linearGradient id="artSky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#062A2B"/>
+              <stop offset=".46" stop-color="#0E5C57"/>
+              <stop offset=".74" stop-color="#4E8270"/>
+              <stop offset=".9" stop-color="#C9B278"/>
+              <stop offset="1" stop-color="#EBD69B"/>
+            </linearGradient>
+            <radialGradient id="artSun" cx=".5" cy=".5" r=".5">
+              <stop offset="0" stop-color="#FFF4D2"/>
+              <stop offset=".55" stop-color="#EBD69B"/>
+              <stop offset="1" stop-color="#C9A24B"/>
+            </radialGradient>
+            <radialGradient id="artGlow" cx=".5" cy=".5" r=".5">
+              <stop offset="0" stop-color="#F5E7BC" stop-opacity=".75"/>
+              <stop offset="1" stop-color="#F5E7BC" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+
+          <rect width="200" height="250" fill="url(#artSky)"/>
+
+          <!-- tong: yulduzlar hali so'nmagan -->
+          <g class="art__sky">
+            <path class="art__star" d="M150 34l1.6 4.4 4.4 1.6-4.4 1.6-1.6 4.4-1.6-4.4-4.4-1.6 4.4-1.6Z" fill="#F5E7BC"/>
+            <path class="art__star art__star--2" d="M124 62l1 2.8 2.8 1-2.8 1-1 2.8-1-2.8-2.8-1 2.8-1Z" fill="#F5E7BC"/>
+            <path class="art__star art__star--3" d="M170 84l.9 2.4 2.4.9-2.4.9-.9 2.4-.9-2.4-2.4-.9 2.4-.9Z" fill="#F5E7BC"/>
+            <circle cx="88" cy="30" r="1" fill="#F5E7BC" opacity=".8"/>
+            <circle cx="34" cy="96" r=".9" fill="#F5E7BC" opacity=".6"/>
+            <circle cx="182" cy="52" r=".9" fill="#F5E7BC" opacity=".7"/>
+          </g>
+
+          <!-- chiqayotgan quyosh -->
+          <g class="art__sun">
+            <circle cx="100" cy="112" r="96" fill="url(#artGlow)"/>
+            <g stroke="#F5E7BC" stroke-width=".7" stroke-linecap="round" opacity=".45">
+              <path d="M100 44V22M66 54 54 34M134 54 146 34M46 80 26 68M154 80 174 68M38 112H16M162 112H184"/>
+            </g>
+            <circle cx="100" cy="112" r="58" fill="url(#artSun)" opacity=".92"/>
+          </g>
+
+          <!-- me'morchilik: gumbaz, peshtoq, minoralar -->
+          <g class="art__city" fill="#062A2B" stroke="#C9A24B" stroke-width="1" stroke-linejoin="round">
+            <!-- minoralar -->
+            <path d="M23 214 26 104h8l3 110Z"/>
+            <path d="M163 214 166 104h8l3 110Z"/>
+            <rect x="21.5" y="98" width="17" height="6" rx="1"/>
+            <rect x="161.5" y="98" width="17" height="6" rx="1"/>
+            <path d="M24 98q6-16 12 0Z"/>
+            <path d="M164 98q6-16 12 0Z"/>
+            <path d="M30 82v-6M170 82v-6" fill="none"/>
+
+            <!-- yon qanotlar -->
+            <path d="M40 214V150h30v64Z"/>
+            <path d="M130 214V150h30v64Z"/>
+
+            <!-- gumbaz -->
+            <rect x="77" y="98" width="46" height="20"/>
+            <path d="M74 100c0-26 14-32 22-42 2-3 3-6 4-10 1 4 2 7 4 10 8 10 22 16 22 42Z"/>
+            <path d="M100 48V38" fill="none"/>
+            <path d="M97 30a5 5 0 1 0 6 7 4 4 0 1 1-6-7Z" fill="#C9A24B" stroke="none"/>
+
+            <!-- peshtoq -->
+            <path d="M66 214V118h68v96Z"/>
+          </g>
+
+          <!-- naqshlar (faqat oltin chiziq) -->
+          <g fill="none" stroke="#C9A24B" stroke-width=".7" opacity=".85">
+            <path d="M84 100c2-18 8-28 16-38M116 100c-2-18-8-28-16-38M100 62v36"/>
+            <path d="M80 104h40M80 112h40"/>
+            <path d="M84 214v-48c0-16 8-24 16-30 8 6 16 14 16 30v48"/>
+            <path d="M89 214v-46c0-12 5-19 11-24 6 5 11 12 11 24v46"/>
+            <path d="M71 124h58v6H71Z"/>
+            <path d="M75 127l3-3 3 3-3 3ZM87 127l3-3 3 3-3 3ZM99 127l3-3 3 3-3 3ZM111 127l3-3 3 3-3 3ZM123 127l3-3 3 3-3 3Z"/>
+            <path d="M48 214v-26c0-6 3-9 7-11 4 2 7 5 7 11v26M138 214v-26c0-6 3-9 7-11 4 2 7 5 7 11v26"/>
+            <path d="M49 168c0-5 3-7 6-8 3 1 6 3 6 8ZM139 168c0-5 3-7 6-8 3 1 6 3 6 8Z"/>
+            <path d="M27 120h6M27 140h6M27 160h6M27 180h6M167 120h6M167 140h6M167 160h6M167 180h6"/>
+          </g>
+
+          <!-- yer va oldingi naqshli chiziq -->
+          <rect y="213" width="200" height="37" fill="#062A2B"/>
+          <path d="M0 214H200" stroke="#C9A24B" stroke-width="1.2"/>
+          <path d="M0 222h200" stroke="#C9A24B" stroke-width=".5" opacity=".5"/>
+          <g fill="none" stroke="#C9A24B" stroke-width=".7" opacity=".55">
+            <path d="M8 236l6-6 6 6-6 6ZM40 236l6-6 6 6-6 6ZM72 236l6-6 6 6-6 6ZM104 236l6-6 6 6-6 6ZM136 236l6-6 6 6-6 6ZM168 236l6-6 6 6-6 6Z"/>
+          </g>
+        </svg></div></div>
+  <p class="name">Islombek</p>
+  <p class="sub">nahorgi oshga taklif etamiz</p>
+  <div class="orn"><i></i><b></b><i></i></div>
+  <p class="date">31-oktabr, 2026 · shanba</p>
+  <p class="venue">«E'zoza» tantanalar saroyi · Andijon</p>
+  <div class="times"><div><span>Nahorgi osh</span><strong>06:00</strong></div><div><span>Ayollar uchun</span><strong>11:00</strong></div></div>
+</div>
+</body></html>
