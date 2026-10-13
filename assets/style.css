@@ -283,6 +283,7 @@ html.no-js .seal{display:none}
 .hero__times > div{flex:1;padding:12px 8px}
 .hero__times > div + div{border-left:1px solid rgba(201,162,75,.32)}
 .hero__times dt{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(250,244,231,.78)}
+.hero__times dd.hero__time-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.3rem;line-height:1.55}
 .hero__times dd{font-family:'Marcellus',serif;font-size:1.5rem;color:var(--gold-lt);margin-top:2px;font-variant-numeric:tabular-nums}
 
 .scroll-cue{

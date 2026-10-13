@@ -269,6 +269,10 @@
 
   /* ══════════ 6. KALENDAR FAYLI (.ics) ══════════ */
   $('icsBtn').addEventListener('click', function () {
+    var ymd = function (add) {
+      var d = new Date(Date.UTC(D.y, D.m, D.d + add));
+      return d.getUTCFullYear() + String(d.getUTCMonth() + 1).padStart(2, '0') + String(d.getUTCDate()).padStart(2, '0');
+    };
     var fmt = function (iso) {
       return new Date(iso).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
     };
@@ -277,8 +281,9 @@
       'BEGIN:VEVENT',
       'UID:toy-' + target + '@onagy.app',
       'DTSTAMP:' + fmt(new Date().toISOString()),
-      'DTSTART:' + fmt(CFG.date),
-      'DTEND:' + fmt(CFG.endDate || CFG.date),
+      // Nahorgi oshning aniq vaqti yo'q — telefon kalendarida butun kunlik tadbir
+      'DTSTART;VALUE=DATE:' + ymd(0),
+      'DTEND;VALUE=DATE:' + ymd(1),
       'SUMMARY:' + CFG.title,
       'LOCATION:' + CFG.place,
       'DESCRIPTION:' + (CFG.note || "Nikoh to'yiga taklifnoma"),

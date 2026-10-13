@@ -4,11 +4,11 @@ Mobil-birinchi onlayn taklifnoma. Mijoz talabi bilan: faqat kuyov ismi, mehrobda
 illyustratsiya, "Tadbir dasturi" va "Kelasizmi?" bo'limlari yo'q. Backend faqat **tilaklar** uchun
 (Cloudflare Pages Functions + D1).
 
-**Tadbir:** 31-oktabr 2026, shanba · nahorgi osh (06:00) · ayollar uchun (11:00) ·
+**Tadbir:** 31-oktabr 2026, shanba · erkaklar uchun nahorgi osh · ayollar uchun 11:00 ·
 «E'zoza» tantanalar saroyi, Andijon.
 
-Nahorgi osh bomdoddan keyin bo'ladi, aniq vaqt belgilanmagan. Mijoz "bomdoddan keyin" deb
-yozilmasin, 06:00 qolsin dedi.
+Nahorgi osh bomdoddan keyin bo'ladi, aniq vaqt yo'q — mijoz talabi bilan saytda vaqt yozilmaydi.
+`config.js` dagi 06:00 faqat sanoq uchun; kalendar fayli butun kunlik.
 
 ---
 
