@@ -101,8 +101,8 @@ f_name = font(SERIF, 136)
 f_sub = font(ITALIC, 44)
 f_place = font(SANS, 23)
 
-# Bitta rasm erkaklar va ayollar havolasida ham chiqadi — shuning uchun
-# vaqt yozilmaydi, faqat sana. Sana config.js da o'zgarsa, rasmni qayta yasang.
+# Ikki vaqt bor (osh va ayollar) — rasmga faqat sana yoziladi.
+# Sana config.js da o'zgarsa, rasmni qayta yasang.
 tracked(d, "NIKOH TO'YIGA TAKLIFNOMA", f_eye, 140, GOLD_LT, track=9)
 tracked(d, 'Islombek', f_name, 196, GOLD_LT, track=3)
 tracked(d, '31-oktabr, 2026  ·  shanba', f_sub, 368, GOLD, track=1)

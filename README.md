@@ -49,7 +49,7 @@ Trek muallifiga tegishli; sayt shaxsiy taklifnoma sifatida ishlatilmoqda.
 
 ### Ulashish rasmi
 
-Rasmda sana bor, vaqt yo'q (bitta rasm ikkala havolada chiqadi). Sana o'zgarsa qayta yasang.
+Rasmda sana bor, vaqt yo'q. Sana o'zgarsa qayta yasang.
 
 ```bash
 OG_FONTS=/papka/shriftlar python3 tools/make-og.py   # Marcellus, Jost, Cormorant TTF bo'lgan papka
@@ -57,15 +57,12 @@ OG_FONTS=/papka/shriftlar python3 tools/make-og.py   # Marcellus, Jost, Cormoran
 
 ## Mehmonga havola
 
-Ikki xil havola — har mehmon faqat o'z vaqtini ko'radi:
+Hamma mehmonga bitta havola (mijoz talabi) — ikkala vaqt ham ko'rinadi:
 
 ```
-https://islombek-taklifnoma.pages.dev/            ← nahorgi osh (06:00), ikkala vaqt ham ko'rinadi
-https://islombek-taklifnoma.pages.dev/?ayollar    ← ayollar: faqat 11:00, sanoq va kalendar ham 11:00
+https://islombek-taklifnoma.pages.dev/
+https://islombek-taklifnoma.pages.dev/?ism=Karimov%20oilasi    ← muhrda mehmon ismi chiqadi
 ```
-
-Muhrda mehmon ismi chiqishi uchun `ism` qo'shiladi: `/?ism=Karimov%20oilasi`,
-ayollarga: `/?ayollar&ism=Zulfiya%20opa`.
 
 > ⚠️ Telegram ulashish rasmini birinchi marta ochilganda keshlab oladi. Havolani tarqatishdan
 > **oldin** yakuniy versiyani deploy qiling, aks holda eski rasm/matn qolib ketadi.

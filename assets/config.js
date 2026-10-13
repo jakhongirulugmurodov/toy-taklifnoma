@@ -18,12 +18,6 @@ window.TOY = {
   date: '2026-10-31T06:00:00+05:00',
   endDate: '2026-10-31T13:00:00+05:00',
 
-  /* Ayollar uchun havola:  /?ayollar
-     Shu havola bilan ochilsa hero'da faqat 11:00 chiqadi, sanoq va
-     kalendar fayli ham 11:00 ga o'tadi. */
-  womenDate: '2026-10-31T11:00:00+05:00',
-  womenEndDate: '2026-10-31T15:00:00+05:00',
-
   /* Tadbir ma'lumotlari (kalendar fayli uchun) */
   title: "Islombekning nikoh to'yi — nahorgi osh",
   note: "Nahorgi osh — soat 06:00 · Ayollar uchun — soat 11:00",

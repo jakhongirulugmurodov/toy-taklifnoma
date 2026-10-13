@@ -6,24 +6,6 @@
 
   var CFG = window.TOY || {};
 
-  /* Ayollar havolasi (/?ayollar) — boshqa vaqt, boshqa sanoq.
-     Mehmon o'ziga tegishli bo'lmagan 06:00 ni ko'rib adashmasin. */
-  var forWomen = false;
-  try {
-    forWomen = new URLSearchParams(location.search).has('ayollar') || location.hash === '#ayollar';
-  } catch (e) {}
-  if (forWomen && CFG.womenDate) {
-    CFG = Object.assign({}, CFG, {
-      date: CFG.womenDate,
-      endDate: CFG.womenEndDate || CFG.womenDate,
-      title: "Islombekning nikoh to'yi — ayollar uchun",
-      note: 'Ayollar uchun — soat 11:00'
-    });
-    document.documentElement.classList.add('is-ayollar');
-    var eye = document.getElementById('heroEye'), sub = document.getElementById('heroSub');
-    if (eye) eye.textContent = "Nikoh to'yiga taklifnoma";
-    if (sub) sub.textContent = 'ayollar davrasiga taklif etamiz';
-  }
   var $ = function (id) { return document.getElementById(id); };
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
