@@ -343,7 +343,7 @@ html.no-js .hero .ornament,html.no-js .hero__meta,html.no-js .hero__times,html.n
   will-change:translate,scale,filter;
 }
 .arch.is-in img{scale:1.001;filter:none}
-/* Mehrob ichidagi illyustratsiya: tong, chiqayotgan quyosh, gumbaz va minoralar */
+/* Mehrob ichidagi illyustratsiya: tong, quyosh, nikoh uzuklari va gul shoxlari */
 .arch__art{
   position:absolute;inset:-4%;width:108%;height:108%;
   translate:var(--px,0) var(--py,0);
@@ -432,15 +432,21 @@ html.no-js .hero .ornament,html.no-js .hero__meta,html.no-js .hero__times,html.n
 }
 .cal__day--empty{visibility:hidden}
 .cal__day--on{background:var(--teal-700);color:var(--cream);font-weight:500;box-shadow:0 0 0 4px rgba(14,92,87,.14)}
-/* Belgilangan kun ustida — oltin hilol (Islom ramzi), yengil chayqaladi */
+/* Belgilangan kun ustida — oltin yulduz (mijoz tanlovi).
+   Muqobil: kalendar blokiga .cal--shoot klassi — uchayotgan yulduz 💫 */
 .cal__day--on::after{
-  content:"";position:absolute;top:-22px;width:26px;height:26px;
-  background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M15.5 2.6A9.6 9.6 0 1 0 21.4 18 7.7 7.7 0 1 1 15.5 2.6Z' fill='%23C9A24B' stroke='%23FAF4E7' stroke-width='.9' stroke-linejoin='round'/%3E%3Cpath d='M18.6 7.2l.7 1.5 1.6.2-1.2 1.1.3 1.6-1.4-.8-1.4.8.3-1.6-1.2-1.1 1.6-.2Z' fill='%23C9A24B'/%3E%3C/svg%3E");
+  content:"";position:absolute;top:-21px;width:24px;height:24px;
+  background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23F5E7BC'/%3E%3Cstop offset='.5' stop-color='%23C9A24B'/%3E%3Cstop offset='1' stop-color='%239C7D33'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M12 1.8l2.9 6.4 7 .7-5.3 4.7 1.6 6.9L12 16.9l-6.2 3.6 1.6-6.9L2.1 8.9l7-.7Z' fill='url(%23g)' stroke='%23FAF4E7' stroke-width='.9' stroke-linejoin='round'/%3E%3C/svg%3E");
   filter:drop-shadow(0 1px 2px rgba(122,95,31,.35));
-  transform-origin:50% 80%;
-  animation:hilol 3.6s ease-in-out infinite;
+  animation:twinkleStar 2.8s ease-in-out infinite;
 }
-@keyframes hilol{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg) translateY(-1px)}}
+.cal--shoot .cal__day--on::after{
+  width:34px;height:26px;top:-22px;margin-left:-6px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 24'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23F5E7BC'/%3E%3Cstop offset='.5' stop-color='%23C9A24B'/%3E%3Cstop offset='1' stop-color='%239C7D33'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg fill='none' stroke='%23C9A24B' stroke-linecap='round'%3E%3Cpath d='M2 19C8 17 13 14 17 10' stroke-width='1.6' opacity='.85'/%3E%3Cpath d='M3 14C8 13 11 11 14 8' stroke-width='1' opacity='.55'/%3E%3Cpath d='M7 22C11 20 15 18 18 15' stroke-width='1' opacity='.45'/%3E%3C/g%3E%3Cpath d='M22.5 1.5l2.2 4.6 5 .6-3.7 3.4 1 5-4.5-2.5-4.5 2.5 1-5-3.7-3.4 5-.6Z' fill='url(%23g)' stroke='%23FAF4E7' stroke-width='.8' stroke-linejoin='round'/%3E%3C/svg%3E");
+  animation:shoot 3.2s ease-in-out infinite;
+}
+@keyframes twinkleStar{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.16) rotate(14deg)}}
+@keyframes shoot{0%,100%{transform:translate(0,0)}50%{transform:translate(3px,-2px)}}
 .cal__note{
   text-align:center;margin-top:18px;
   font-family:'Cormorant Garamond',serif;font-style:italic;
