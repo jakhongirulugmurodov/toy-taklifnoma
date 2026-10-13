@@ -116,4 +116,4 @@ npx wrangler pages dev . --d1 DB=local --binding ADMIN_KEY=test   # tilaklar bil
 
 ---
 
-Sayt [O'N agy.](https://onagy.app) tomonidan tayyorlandi.
+Sayt [O'N agy.](https://t.me/sp_business_agency) tomonidan tayyorlandi.
