@@ -26,7 +26,7 @@
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa&family=Marcellus&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500&family=Caveat:wght@400;600&display=swap"
       onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa&family=Marcellus&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500&family=Caveat:wght@400;600&display=swap"></noscript>
-<link rel="stylesheet" href="assets/style.css?v=21">
+<link rel="stylesheet" href="assets/style.css?v=22">
 <script>document.documentElement.classList.remove('no-js');</script>
 </head>
 <body>
@@ -268,6 +268,62 @@
   </div>
 </section>
 
+<!-- ═══════════ TILAK QOLDIRISH ═══════════
+     Backend javob bermaguncha yashirin turadi (app.js ochadi) -->
+<section class="pad dark" id="tilak" hidden>
+  <div class="girih girih--dark" aria-hidden="true"></div>
+  <div class="wrap wrap--narrow">
+    <header class="head reveal">
+      <p class="eyebrow eyebrow--light">Duo va tilaklar</p>
+      <h2>Tilak qoldiring</h2>
+    </header>
+
+    <form class="wishform reveal" id="wishForm" novalidate>
+      <div class="field">
+        <label for="wishName">Ismingiz <b aria-hidden="true">*</b></label>
+        <input type="text" id="wishName" name="name" autocomplete="name" required
+               maxlength="60" placeholder="Aziz Karimov">
+      </div>
+
+      <input type="text" name="website" id="wishHp" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+      <div class="field">
+        <label for="wishText">Yangi oilaga tilagingiz <b aria-hidden="true">*</b></label>
+        <textarea id="wishText" maxlength="200" rows="4" required
+                  placeholder="Baxtli bo'linglar…"></textarea>
+        <span class="wishbox__count" id="wishCount">0 / 200</span>
+      </div>
+
+      <p class="field__err" id="wishErr" role="alert" hidden></p>
+      <button class="btn btn--gold wishform__send" id="wishSend" type="submit">Tilakni yuborish</button>
+    </form>
+
+    <div class="wishdone" id="wishDone" hidden>
+      <p class="wishbox__done">Iliq tilagingiz uchun rahmat <span aria-hidden="true">✦</span></p>
+      <button class="link" id="wishEdit" type="button">Tilakni o'zgartirish</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ TILAKLAR LENTASI ═══════════ -->
+<section class="wishes" id="wishes" hidden>
+  <div class="wrap">
+    <header class="head reveal">
+      <p class="eyebrow">Mehmonlarimizdan</p>
+      <h2>Iliq tilaklar</h2>
+    </header>
+  </div>
+  <div class="ribbon" id="ribbon" aria-label="Mehmonlar tilaklari — surib ko'ring">
+    <div class="rib" id="rib1"><div class="rib__track" id="ribTrack1"></div></div>
+    <div class="rib" id="rib2" hidden><div class="rib__track" id="ribTrack2"></div></div>
+  </div>
+  <div class="wrap wishes__foot">
+    <button class="btn btn--ghost wishes__all" id="wishAll" type="button">
+      Hammasini o'qish <b id="wishAllN"></b>
+    </button>
+  </div>
+</section>
+
 </main>
 
 <footer class="foot">
@@ -278,10 +334,35 @@
   <p class="foot__by">Sayt <a href="https://onagy.app" target="_blank" rel="noopener">O'N agy.</a> tomonidan tayyorlandi</p>
 </footer>
 
+<!-- ═══════════ MAKTUBLAR ═══════════ -->
+<div class="letters" id="letters" hidden role="dialog" aria-modal="true" aria-label="Mehmonlar tilaklari">
+  <div class="girih girih--dark" aria-hidden="true"></div>
+  <p class="letters__eye">Mehmonlarimizdan</p>
+  <button class="letters__x" id="lettersX" type="button" aria-label="Yopish">&#10005;</button>
+
+  <div class="letters__stage">
+    <article class="letter" id="letterCard">
+      <span class="letter__wax" aria-hidden="true">I</span>
+      <p class="letter__to">Islombek va yangi oilaga</p>
+      <p class="letter__body" id="letterBody"></p>
+      <footer class="letter__sign">
+        <b id="letterName">&#8212;</b><span id="letterDate"></span>
+      </footer>
+    </article>
+  </div>
+
+  <p class="letters__hint" id="lettersHint">Suring</p>
+  <div class="letters__nav">
+    <button class="letters__ar" id="letterPrev" type="button" aria-label="Oldingi maktub">&#8249;</button>
+    <span class="letters__ct" id="letterCount">0 / 0</span>
+    <button class="letters__ar" id="letterNext" type="button" aria-label="Keyingi maktub">&#8250;</button>
+  </div>
+</div>
+
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="assets/config.js"></script>
-<script src="assets/app.js?v=21"></script>
+<script src="assets/app.js?v=22"></script>
 <script>
 /* Zaxira: skript yiqilgan bo'lsa ham mehmon taklifnomani ko'raveradi */
 if (!window.__toyReady) {

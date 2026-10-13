@@ -8,3 +8,10 @@
 # Sozlama fayli o'zgarsa darhol yetib borsin
 /assets/config.js
   Cache-Control: no-cache
+
+/api/*
+  Cache-Control: no-store
+
+/admin.html
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store

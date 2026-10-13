@@ -1,7 +1,8 @@
 # Islombek — nikoh to'yi taklifnomasi
 
 Mobil-birinchi onlayn taklifnoma. Mijoz talabi bilan: faqat kuyov ismi, mehrobda rasm o'rniga
-illyustratsiya, "Tadbir dasturi" va "Kelasizmi?" bo'limlari yo'q — backend ham yo'q, sof statik sayt.
+illyustratsiya, "Tadbir dasturi" va "Kelasizmi?" bo'limlari yo'q. Backend faqat **tilaklar** uchun
+(Cloudflare Pages Functions + D1).
 
 **Tadbir:** 31-oktabr 2026, shanba · nahorgi osh (06:00) · ayollar uchun (11:00) ·
 «E'zoza» tantanalar saroyi, Andijon.
@@ -85,10 +86,32 @@ npx wrangler pages deploy . --project-name=islombek-taklifnoma --branch=claude/c
 
 Loyiha nomi boshqacha bo'lsa, `index.html` dagi `og:url` va `og:image` manzillarini ham o'zgartiring.
 
+## Tilaklar — backend
+
+| Metod | Yo'l | Nima qiladi |
+|---|---|---|
+| `POST` | `/api/wish` | `{vid, name, wish, website}` — bitta brauzerdan bitta tilak, qayta yuborsa yangilanadi |
+| `GET` | `/api/wishes` | ochiq lenta: oxirgi 100 ta (ism + tilak) |
+| `GET` | `/api/list` | admin, `X-Admin-Key` bilan |
+| `POST` | `/api/delete` | admin, `{id}` — noo'rin tilakni o'chirish |
+
+Himoya: asalarixona maydoni · IP bo'yicha soatiga 10 ta · admin kaliti vaqt-bo'yicha xavfsiz solishtiriladi.
+Jadval birinchi so'rovda o'zi yaratiladi (`functions/_lib.js`).
+
+**Baza ulanmagan bo'lsa** API `503` qaytaradi va saytda tilaklar bo'limi umuman ko'rinmaydi —
+sayt buzilmaydi.
+
+Ulash: D1 bazasini yarating (`islombek-tilaklar`), `database_id` ni `wrangler.toml` ga yozing.
+Pages loyihasi sozlamalarida maxfiy qiymatlar:
+
+- `ADMIN_KEY` — `/admin.html` paroli
+- `TG_TOKEN`, `TG_CHAT` — ixtiyoriy: har yangi tilak Telegram'ga tushadi
+
 ## Mahalliy ishga tushirish
 
 ```bash
-python3 -m http.server 4321
+python3 -m http.server 4321                                   # faqat ko'rinish
+npx wrangler pages dev . --d1 DB=local --binding ADMIN_KEY=test   # tilaklar bilan
 ```
 
 ---

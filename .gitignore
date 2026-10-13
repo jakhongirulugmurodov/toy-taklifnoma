@@ -2,3 +2,4 @@
 *.bak
 .admin-parol.txt
 .wrangler/
+node_modules/

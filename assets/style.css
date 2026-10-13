@@ -432,14 +432,15 @@ html.no-js .hero .ornament,html.no-js .hero__meta,html.no-js .hero__times,html.n
 }
 .cal__day--empty{visibility:hidden}
 .cal__day--on{background:var(--teal-700);color:var(--cream);font-weight:500;box-shadow:0 0 0 4px rgba(14,92,87,.14)}
-/* Belgilangan kun ustida — sakkiz qirrali oltin yulduz (girih naqshidan) */
+/* Belgilangan kun ustida — oltin hilol (Islom ramzi), yengil chayqaladi */
 .cal__day--on::after{
-  content:"";position:absolute;top:-16px;width:20px;height:20px;
-  background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='%23C9A24B' stroke='%23FAF4E7' stroke-width='.8' stroke-linejoin='round'%3E%3Crect x='5' y='5' width='14' height='14'/%3E%3Crect x='5' y='5' width='14' height='14' transform='rotate(45 12 12)'/%3E%3C/g%3E%3Ccircle cx='12' cy='12' r='2.6' fill='%23FAF4E7'/%3E%3C/svg%3E");
+  content:"";position:absolute;top:-22px;width:26px;height:26px;
+  background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M15.5 2.6A9.6 9.6 0 1 0 21.4 18 7.7 7.7 0 1 1 15.5 2.6Z' fill='%23C9A24B' stroke='%23FAF4E7' stroke-width='.9' stroke-linejoin='round'/%3E%3Cpath d='M18.6 7.2l.7 1.5 1.6.2-1.2 1.1.3 1.6-1.4-.8-1.4.8.3-1.6-1.2-1.1 1.6-.2Z' fill='%23C9A24B'/%3E%3C/svg%3E");
   filter:drop-shadow(0 1px 2px rgba(122,95,31,.35));
-  animation:khatam 3.2s ease-in-out infinite;
+  transform-origin:50% 80%;
+  animation:hilol 3.6s ease-in-out infinite;
 }
-@keyframes khatam{0%,100%{transform:rotate(0) scale(1)}50%{transform:rotate(45deg) scale(1.18)}}
+@keyframes hilol{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg) translateY(-1px)}}
 .cal__note{
   text-align:center;margin-top:18px;
   font-family:'Cormorant Garamond',serif;font-style:italic;
@@ -545,6 +546,88 @@ html.no-js .hero .ornament,html.no-js .hero__meta,html.no-js .hero__times,html.n
   100%{transform:translate(var(--sx,18px),-108vh);opacity:0}
 }
 
+/* ══════════ TILAK QOLDIRISH ══════════ */
+.field{margin-bottom:14px;text-align:left}
+.field label{
+  display:block;margin-bottom:7px;
+  font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-lt);
+}
+.field label b{color:#F0A8A8}
+.field label span{text-transform:none;letter-spacing:.04em;opacity:.62;font-size:.72rem;margin-left:4px}
+.field input{
+  width:100%;padding:14px 15px;
+  background:rgba(250,244,231,.09);
+  border:1px solid rgba(201,162,75,.45);border-radius:10px;
+  color:var(--cream);font-size:1rem;font-weight:300;
+  transition:border-color .2s ease,background .2s ease;
+}
+.field input::placeholder{color:rgba(250,244,231,.62)}
+.field input:focus{background:rgba(250,244,231,.14);border-color:var(--gold)}
+.field.has-err input{border-color:#E58E8E}
+.field__err{margin-top:6px;font-size:.78rem;color:#F0A8A8}
+
+.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+/* Oltin ip forma ortidan o'tadi — maydonlar shaffof bo'lmasin */
+#tilak .field input,#tilak .field textarea{background:#173B3A}
+#tilak .field input:focus,#tilak .field textarea:focus{background:#1E4443}
+.field{position:relative}
+.field textarea{
+  width:100%;resize:none;
+  background:rgba(250,244,231,.09);
+  border:1px solid rgba(201,162,75,.45);border-radius:10px;
+  color:var(--cream);padding:12px 14px;
+  font-family:'Jost',sans-serif;font-size:.95rem;font-weight:300;line-height:1.5;
+  transition:border-color .2s ease,background .2s ease;
+}
+.field textarea::placeholder{color:rgba(250,244,231,.55)}
+.field textarea:focus{background:rgba(250,244,231,.14);border-color:var(--gold);outline:none}
+.wishbox__count{display:block;text-align:right;margin-top:6px;font-size:.7rem;color:rgba(250,244,231,.55);font-variant-numeric:tabular-nums}
+.wishform__send{width:100%;padding:16px;margin-top:8px}
+.wishform__send[disabled]{opacity:.55;cursor:progress}
+.wishdone{text-align:center}
+.wishbox__done{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:1.3rem;color:var(--gold-lt);margin-bottom:14px;
+}
+
+/* ══════════ TILAKLAR LENTASI ══════════ */
+.wishes{position:relative;padding:76px 0 84px;background:var(--paper);overflow:hidden}
+.ribbon{
+  position:relative;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+}
+/* Har qator — qo'l bilan suriladigan haqiqiy scroll konteyner */
+.rib{
+  overflow-x:auto;overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+  cursor:grab;
+}
+.rib::-webkit-scrollbar{display:none}
+.rib:active{cursor:grabbing}
+.rib + .rib{margin-top:14px}
+.rib__track{display:flex;gap:14px;width:max-content;padding:6px 2px}
+.wishcard{
+  flex:none;width:min(270px,72vw);
+  background:var(--cream);border:1px solid var(--line);border-radius:12px;
+  padding:16px 18px;box-shadow:var(--shadow-sm);
+  position:relative;
+}
+.wishcard::before{
+  content:"❝";position:absolute;top:8px;right:14px;
+  font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--gold);opacity:.55;
+}
+.wishcard b{
+  display:block;font-family:'Marcellus',serif;font-weight:400;
+  font-size:.88rem;color:var(--teal-800);margin-bottom:5px;
+}
+.wishcard p{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:.98rem;line-height:1.5;color:var(--ink);
+  overflow-wrap:break-word;
+}
+
 /* ══════════ MOSLASHUV ══════════ */
 @media (min-width:640px){
   .pad{padding:100px 24px}
@@ -570,7 +653,7 @@ html.no-js .hero .ornament,html.no-js .hero__meta,html.no-js .hero__times,html.n
 }
 
 @media print{
-  .seal,.music,.scroll-cue,.map,.venue__nav,#icsBtn,.toast,.thread,.spark{display:none !important}
+  .seal,.music,.scroll-cue,.map,.venue__nav,#icsBtn,.toast,.thread,.spark,#tilak,.wishes,.letters{display:none !important}
   body{background:#fff;color:#000}
   .hero,.dark,.foot{background:#fff !important;color:#000 !important}
   .hero{min-height:auto;padding:40px 0}
@@ -578,3 +661,93 @@ html.no-js .hero .ornament,html.no-js .hero__meta,html.no-js .hero__times,html.n
   .girih,.hero__frame,.corner{display:none}
   .reveal{opacity:1;transform:none}
 }
+
+/* ══════════════════════════════════════════════════
+   MAKTUBLAR — tilaklarni to'liq o'qish
+   ══════════════════════════════════════════════════ */
+.wishes__foot{margin-top:22px;text-align:center}
+.wishes__all{padding:14px 30px;font-size:.74rem}
+.wishes__all b{font-weight:500;color:var(--gold-dk);margin-left:7px}
+
+.letters{
+  position:fixed;inset:0;z-index:95;overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:64px 22px 96px;
+  background:radial-gradient(120% 82% at 50% 12%,var(--teal-600),var(--teal-700) 40%,var(--teal-900));
+  opacity:0;transition:opacity .4s var(--ease);
+}
+.letters.is-on{opacity:1}
+.letters__eye{
+  position:absolute;top:30px;left:0;right:0;text-align:center;
+  font-size:.58rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-lt);
+}
+.letters__x{
+  position:absolute;top:22px;right:18px;z-index:3;
+  width:34px;height:34px;border-radius:50%;
+  border:1px solid rgba(201,162,75,.5);color:var(--gold-lt);
+  display:flex;align-items:center;justify-content:center;font-size:.9rem;
+}
+.letters__stage{width:100%;max-width:400px;position:relative;z-index:2}
+
+.letter{
+  background:var(--cream);border-radius:6px;
+  padding:34px 24px 22px;position:relative;
+  box-shadow:0 22px 54px rgba(0,0,0,.34);
+  transform:rotate(-1deg);
+  transition:transform .32s var(--ease),opacity .32s var(--ease);
+}
+.letter::before{content:"";position:absolute;inset:9px;border:1px solid rgba(201,162,75,.35);border-radius:3px;pointer-events:none}
+.letter.is-out-l{transform:translateX(-26%) rotate(-5deg);opacity:0}
+.letter.is-out-r{transform:translateX(26%) rotate(3deg);opacity:0}
+
+.letter__wax{
+  position:absolute;top:-19px;left:50%;transform:translateX(-50%);
+  width:44px;height:44px;border-radius:50%;background:var(--foil);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Marcellus',serif;font-size:.76rem;color:#3E3110;
+  box-shadow:0 6px 16px rgba(0,0,0,.32);
+}
+.letter__wax i{font-style:normal;opacity:.7;margin:0 2px}
+.letter__to{
+  text-align:center;margin-bottom:14px;
+  font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-dk);
+}
+.letter__body{
+  font-family:'Caveat',cursive;font-size:1.42rem;line-height:1.55;
+  color:#33332C;text-align:center;
+  min-height:180px;max-height:44vh;overflow-y:auto;
+  display:flex;align-items:center;justify-content:center;
+  padding:0 4px;
+}
+.letter__sign{
+  margin-top:16px;padding-top:11px;text-align:right;
+  border-top:1px solid rgba(201,162,75,.3);
+}
+.letter__sign b{display:block;font-family:'Marcellus',serif;font-weight:400;font-size:.94rem;color:var(--teal-800)}
+.letter__sign span{font-size:.6rem;letter-spacing:.1em;color:#A9A79E}
+
+.letters__hint{
+  position:absolute;bottom:74px;left:0;right:0;text-align:center;
+  font-size:.58rem;letter-spacing:.24em;text-transform:uppercase;
+  color:rgba(250,244,231,.5);transition:opacity .4s ease;
+}
+.letters__nav{
+  position:absolute;bottom:calc(24px + env(safe-area-inset-bottom));left:0;right:0;
+  display:flex;align-items:center;justify-content:center;gap:16px;color:var(--gold-lt);z-index:3;
+}
+.letters__ar{
+  width:38px;height:38px;border-radius:50%;
+  border:1px solid rgba(201,162,75,.5);color:var(--gold-lt);
+  display:flex;align-items:center;justify-content:center;font-size:1rem;
+  transition:background .2s ease;
+}
+.letters__ar:hover{background:rgba(235,214,155,.12)}
+.letters__ar[disabled]{opacity:.32}
+.letters__ct{font-size:.76rem;letter-spacing:.12em;font-variant-numeric:tabular-nums;min-width:64px;text-align:center}
+
+@media (max-width:400px){
+  .letters{padding:60px 16px 92px}
+  .letter{padding:30px 18px 20px}
+  .letter__body{font-size:1.3rem;min-height:160px}
+}
+.letter__wax{font-size:1.15rem}
