@@ -38,8 +38,9 @@ tools/make-og.py      ulashish rasmini qayta yasash
 
 ### Musiqa
 
-Mijoz *Izzat Shukurov — Oshiqman* qo'shig'ining **minus** variantini so'radi. Hozir faylda eski
-(vokalli) variant turibdi. Minus faylini olib, siqib, almashtiring:
+*Izzat Shukurov — Oshiqman*, minus (mijoz yuborgan fayl). 96k mono AAC, ovoz balandligi
+tekislangan (-16 LUFS), boshida 2 s va oxirida 3.5 s silliq o'tish — halqada uzilish sezilmaydi.
+Almashtirish:
 
 ```bash
 afconvert -f m4af -d aac -b 96000 -s 1 minus.mp3 assets/music.m4a      # macOS
