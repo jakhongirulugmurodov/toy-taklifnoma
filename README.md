@@ -75,10 +75,16 @@ ayollarga: `/?ayollar&ism=Zulfiya%20opa`.
 **Sohibjon taklifnomasining `toy-taklifnoma` loyihasiga deploy qilmang** — u ustidan yoziladi.
 Bu taklifnoma uchun alohida loyiha:
 
+Kod `claude/charming-edison-lfv9y7` branch'ida. Wrangler login qilingan kompyuterda:
+
 ```bash
-npx wrangler pages project create islombek-taklifnoma --production-branch=main
-npx wrangler pages deploy . --project-name=islombek-taklifnoma
+git fetch origin
+git checkout claude/charming-edison-lfv9y7
+npx wrangler pages project create islombek-taklifnoma --production-branch=claude/charming-edison-lfv9y7
+npx wrangler pages deploy . --project-name=islombek-taklifnoma --branch=claude/charming-edison-lfv9y7
 ```
+
+`project create` faqat birinchi marta. Keyingi o'zgarishlarda faqat `git pull` va `deploy`.
 
 Loyiha nomi boshqacha bo'lsa, `index.html` dagi `og:url` va `og:image` manzillarini ham o'zgartiring.
 
