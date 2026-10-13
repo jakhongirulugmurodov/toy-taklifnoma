@@ -8,3 +8,7 @@
 # Sozlama fayli o'zgarsa darhol yetib borsin
 /assets/config.js
   Cache-Control: no-cache
+
+# Video taklifnoma — havola bosilganda to'g'ridan-to'g'ri yuklanadi
+/assets/islombek-taklifnoma.mp4
+  Content-Disposition: attachment; filename="islombek-taklifnoma.mp4"
