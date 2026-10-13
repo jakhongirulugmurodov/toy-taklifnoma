@@ -3,12 +3,8 @@
    ══════════════════════════════════════════════════ */
 window.TOY = {
 
-  /* Backend manzili (faqat tilaklar uchun — "Kelasizmi?" bo'limi yo'q).
-       ''                          → backend yo'q, tilaklar bo'limi chiqmaydi
-       '/'                         → sayt bilan bir xil domen (/api/…)
-       'https://xxx.workers.dev'   → alohida server
-     Baza (D1) ulanmagan bo'lsa ham sayt ishlaydi — bo'lim shunchaki yashirin. */
-  api: '/',
+  /* Backend yo'q — tilaklar bo'limi mijoz talabi bilan olib tashlangan */
+  api: '',
 
   /* Tadbir boshlanishi — ISO, O'zbekiston vaqti (+05:00).
      Sanoq shu vaqtga sanaydi; sahifadagi barcha sana matnlari

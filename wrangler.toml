@@ -4,13 +4,5 @@ name = "islombek-taklifnoma"
 compatibility_date = "2026-08-01"
 pages_build_output_dir = "."
 
-# Tilaklar bazasi. Sohibjonning "toy" bazasi EMAS — alohida.
-[[d1_databases]]
-binding = "DB"
-database_name = "islombek-tilaklar"
-database_id = "06b5e697-6a9e-416e-92a2-3fcabc9518af"
-
-# Maxfiy qiymatlar bu faylda EMAS — Pages loyihasi sozlamalarida:
-#   ADMIN_KEY   → /admin.html paroli
-#   TG_TOKEN    → (ixtiyoriy) Telegram bot tokeni
-#   TG_CHAT     → (ixtiyoriy) xabar tushadigan chat ID
+# Backend yo'q — tilaklar bo'limi mijoz talabi bilan olib tashlangan.
+# ("islombek-tilaklar" D1 bazasi Cloudflare'da qoldi, ishlatilmaydi.)
